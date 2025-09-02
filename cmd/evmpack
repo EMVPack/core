@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Find the real directory of the script, resolving symlinks
+SCRIPT_PATH=$(readlink -f "$0")
+SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+
+# The main CLI script is in the same directory
+CLI_SCRIPT="$SCRIPT_DIR/evmpack-cli.js"
+
+# Execute the main script with Node.js, suppressing warnings
+NODE_OPTIONS=--no-warnings exec node "$CLI_SCRIPT" "$@"

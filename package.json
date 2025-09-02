@@ -1,0 +1,26 @@
+{
+  "name": "evmpack",
+  "version": "1.0.0-beta.1",
+  "scripts": {
+    "deploy:opsepolia": "forge script script/Deploy.s.sol:DeployScript --rpc-url opsepolia -v ",
+    "deploy:opsepolia:broadcast": "forge script script/Deploy.s.sol:DeployScript --rpc-url opsepolia -v --broadcast",
+    "upgrade:opsepolia": "forge script script/Upgrade.s.sol:UpgradeScript --rpc-url opsepolia --private-key $EVMPACK_PRIVATE_KEY -vvvv --sig 'run(address)' 0xF7880cF12bA6ce5EFB4f8131C3831582780E39a2",
+    "upgrade:opsepolia:broadcast": "forge script script/Upgrade.s.sol:UpgradeScript --rpc-url opsepolia --private-key $EVMPACK_PRIVATE_KEY -vvvv --sig 'run(address)' 0xF7880cF12bA6ce5EFB4f8131C3831582780E39a2 --broadcast",
+    "test:contracts": "forge test",
+    "lint:sol": "slither . --foundry-out-directory artifacts --exclude-low --exclude different-pragma,incorrect-return-in-assembly,assembly-usage,low-level-calls"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts-upgradeable": "^5.4.0",
+    "axios": "^1.11.0",
+    "ethers": "^6.15.0",
+    "form-data": "^4.0.4",
+    "glob": "^9.3.5",
+    "inquirer": "^12.9.3",
+    "semver": "^7.7.2",
+    "tar": "^7.4.3",
+    "yargs": "^18.0.0"
+  },
+  "bin": {
+    "evmpack": "./cmd/evmpack"
+  }
+}

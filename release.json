@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-beta.1",
+  "dependencies": {},
+  "compiler": {
+    "via_ir": true,
+    "evm_version": "prague",
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "no_metadata": true,
+    "solc_version": "0.8.28",
+    "output_dir": "./artifacts",
+    "context_dir": "./"
+  }
+}

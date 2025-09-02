@@ -1,0 +1,22 @@
+{
+  "name": "evmpack",
+  "type": "library",
+  "title": "On-Chain package manager for versioning and secure deployment of updatable contracts",
+  "description": "EVMPack is an infrastructure project for the EVM that brings order and security to the lifecycle management of smart contracts. It combines a decentralized package registry with strong semantic versioning (SemVer 2.0.0), with a focus on securely updating implementations.\n\nKey benefits for security and reliability:\n- Transparent versioning: All available contract versions and their dependencies are recorded on-chain.\n- Controlled deployment: An integrated proxy factory ensures that new proxy contracts are created with predictable and verified implementations.\n- Decentralized governance: The right to publish new versions is strictly controlled by a list of maintainers. EVMPack is not just a dependency manager, but a framework for building fault-tolerant and easily maintainable decentralized systems.",
+  "author": "Mikhail Ivantsov",
+  "license": "MIT",
+  "git": "https://github.com/evmpack",
+  "tags": [
+    "evm",
+    "blockchain",
+    "smart-contracts",
+    "solidity",
+    "security",
+    "versioning",
+    "upgradeable-contracts",
+    "semver",
+    "infrastructure",
+    "tooling"
+  ],
+  "homepage": "https://github.com/evmpack"
+}
