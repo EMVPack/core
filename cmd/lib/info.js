@@ -41,4 +41,24 @@ async function info(name) {
     }
 }
 
-module.exports = { info };
+async function listPackages() {
+
+    if(process.env.EVM_PACK_DEV){
+        console.info("EVMPack run on testnet dev mode, he work without archive node, this means that you may not see all the packages\n")
+    }
+    const provider = await getProvider();
+    const evmpack = await getEVMPack(provider);
+
+    const filter = evmpack.filters.RegisterPackage();
+    const events = await evmpack.queryFilter(filter, -9999);
+
+    // TODO: move to graphql
+    
+    for (const event of events) {
+        console.log(`- ${event.args.name}`)
+    }
+
+
+}
+
+module.exports = { info, listPackages };

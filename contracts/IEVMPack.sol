@@ -19,7 +19,7 @@ interface IEVMPack {
      * @param packageType The type of the package (Implementation or Library).
      * @param meta The address of the package meta json.
      */
-    event RegisterPackage(string indexed name, address indexed maintainer, PackageType packageType, string meta);
+    event RegisterPackage(string name, address indexed maintainer, PackageType packageType, string meta);
 
     /**
      * @notice Emitted when a new release is added to a package.
@@ -27,28 +27,28 @@ interface IEVMPack {
      * @param version The version of the new release.
      * @param manifest ipfs hash to json manifest
      */
-    event NewRelease(string indexed name, string indexed version, string manifest);
+    event NewRelease(string name, string version, string manifest);
 
     /**
      * @notice Emitted when a maintainer is added to a package.
      * @param name The name of the package.
      * @param maintainer The address of new the maintainer.
      */
-    event AddMaintainer(string indexed name, address maintainer);
+    event AddMaintainer(string name, address maintainer);
 
     /**
      * @notice Emitted when a maintainer is removed from a package.
      * @param name The name of the package.
      * @param maintainer The address of removed maintainer.
      */
-    event RemoveMaintainer(string indexed name, address maintainer);
+    event RemoveMaintainer(string name, address maintainer);
 
     /**
      * @notice Emitted when a package's metadata is updated.
      * @param name The name of the package.
      * @param meta The new metadata (e.g., an IPFS hash).
      */
-    event UpdatePackageMeta(string indexed name, string meta);
+    event UpdatePackageMeta(string name, string meta);
 
 
     // ==================== ERRORS ====================

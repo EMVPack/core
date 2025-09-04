@@ -18,7 +18,7 @@ contract DeployScript is Script {
         
         address dummyImplementation = 0x4e59b44847b379578588920cA78FbF26c0B4956C; // Nick's create2 factory
 
-        bytes32 salt = keccak256(abi.encodePacked("EVMPack.dev.v6"));
+        bytes32 salt = keccak256(abi.encodePacked("EVMPack.dev.v7"));
 
         (address proxy_admin, address proxyAddress) = proxyFactory.deploy(salt, address(dummyImplementation), vm.envAddress("EVMPACK_DEPLOYER_ADDRESS"), "");
 
