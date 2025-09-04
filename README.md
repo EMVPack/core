@@ -1,4 +1,4 @@
-# EVMPack: A not just Package Manager for the EVM, its Blockchain Project Lifecycle Management
+# Blockchain Project Lifecycle Management
 
 EVMPack is an infrastructure project for the EVM that brings order and security to the lifecycle management of smart contracts. It combines a decentralized package registry with strong semantic versioning (SemVer 2.0.0), with a focus on securely updating implementations.
 
@@ -72,3 +72,4 @@ We believe in the power of collaboration. If you have an idea for how to make EV
 *   **License**: MIT
 *   **Git**: [https://github.com/evmpack](https://github.com/evmpack)
 *   **Homepage**: [https://github.com/evmpack](https://github.com/evmpack)
+*   **Donation**: 0x602A44E855777E8b15597F0cDf476BEbB7aa70dE
