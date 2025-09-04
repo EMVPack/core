@@ -59,6 +59,7 @@ EVMPack is a powerful tool with a lot of features. Here's a quick rundown of wha
 | `compile` | Compile your smart contracts. |
 | `info [package]` | Get the lowdown on a specific package. |
 | `link` | Link local packages for easy development. |
+| `list` | List all available packages. |
 | `status` | Get a quick overview of your EVMPack setup. |
 | `enable-node-support` | Hook up EVMPack with your Node.js projects. |
 | `enable-foundry-support`| Hook up EVMPack with your Foundry projects. |
@@ -87,4 +88,5 @@ We believe in the power of collaboration. If you have an idea for how to make EV
 *   **Author**: Mikhail Ivantsov
 *   **License**: MIT
 *   **GitHub**: [https://github.com/evmpack](https://github.com/evmpack)
+*   **X.com**: [https://x.com/darkraintech](https://x.com/darkraintech)
 *   **Donation**: `0x602A44E855777E8b15597F0cDf476BEbB7aa70dE`
