@@ -4,6 +4,7 @@ pragma solidity ^0.8.28;
 import "forge-std/Test.sol";
 import "../../contracts/EVMPack.sol";
 import "../../contracts/EVMPackProxyFactory.sol";
+import "../../contracts/EVMPackProxyAdmin.sol";
 import "../../contracts/EVMPackLib.sol";
 import "../../contracts/SemVer.sol";
 
@@ -14,9 +15,9 @@ contract EVMPackTest is Test {
     EVMPackProxyFactory proxyFactory;
 
     function setUp() public {
-        proxyFactory = new EVMPackProxyFactory();
         evmpack = new EVMPack();
-        evmpack.initialize(0, address(proxyFactory));
+        evmpack.initialize(0);
+        proxyFactory = new EVMPackProxyFactory(address(evmpack));
     }
 
     function testRegisterLibrary() public {
@@ -49,7 +50,7 @@ contract EVMPackTest is Test {
         add.release.manifest = "Qm...manifest";
 
         IEVMPack.Implementation memory implementation;
-        implementation.implementation_type = IEVMPack.ImplementationType.Static;
+        implementation.implementationType = IEVMPack.ImplementationType.Static;
         implementation.target = address(0x123);
         implementation.selector = "0x12345678";
 
@@ -72,7 +73,7 @@ contract EVMPackTest is Test {
         assertEq(release.version, add.release.version);
         assertEq(release.manifest, add.release.manifest);
 
-        assertEq(uint(impl.implementation_type), uint(implementation.implementation_type));
+        assertEq(uint(impl.implementationType), uint(implementation.implementationType));
         assertEq(impl.target, implementation.target);
         assertEq(impl.selector, implementation.selector);
     }
@@ -154,13 +155,65 @@ contract EVMPackTest is Test {
         add.release.manifest = "Qm...manifest";
 
         IEVMPack.Implementation memory implementation;
-        implementation.implementation_type = IEVMPack.ImplementationType.Transparent;
+        implementation.implementationType = IEVMPack.ImplementationType.Transparent;
         implementation.target = address(dummy);
         implementation.selector = "setX(uint256)";
 
         evmpack.registerImplementation(add, implementation);
 
-        address proxy = evmpack.usePackage(add.name, add.release.version, address(this), "");
+        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), "", "");
+
+        DummyImplementation proxyDummy = DummyImplementation(proxy);
+        proxyDummy.setX(42);
+
+        assertEq(proxyDummy.x(), 42);
+    }
+
+
+    function testUsePackageDeterm() public {
+        DummyImplementation dummy = new DummyImplementation();
+
+        IEVMPack.Add memory add;
+        add.name = "my-implementation";
+        add.meta = "Qm...meta";
+        add.release.version = "1.0.0";
+        add.release.manifest = "Qm...manifest";
+
+        IEVMPack.Implementation memory implementation;
+        implementation.implementationType = IEVMPack.ImplementationType.Transparent;
+        implementation.target = address(dummy);
+        implementation.selector = "setX(uint256)";
+
+        evmpack.registerImplementation(add, implementation);
+
+        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), "", "my-super-salt");
+
+        DummyImplementation proxyDummy = DummyImplementation(proxy);
+        proxyDummy.setX(42);
+
+        assertEq(proxyDummy.x(), 42);
+    }
+
+
+    function testUsePackageDetermWithAdmin() public {
+        DummyImplementation dummy = new DummyImplementation();
+
+        IEVMPack.Add memory add;
+        add.name = "my-implementation";
+        add.meta = "Qm...meta";
+        add.release.version = "1.0.0";
+        add.release.manifest = "Qm...manifest";
+
+        IEVMPack.Implementation memory implementation;
+        implementation.implementationType = IEVMPack.ImplementationType.Transparent;
+        implementation.target = address(dummy);
+        implementation.selector = "setX(uint256)";
+
+        evmpack.registerImplementation(add, implementation);
+
+        address proxy_admin = address(new EVMPackProxyAdmin(address(this)));
+
+        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, proxy_admin, "", "my-super-salt");
 
         DummyImplementation proxyDummy = DummyImplementation(proxy);
         proxyDummy.setX(42);

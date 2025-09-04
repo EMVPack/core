@@ -32,54 +32,38 @@ interface IEVMPack {
     /**
      * @notice Emitted when a maintainer is added to a package.
      * @param name The name of the package.
-     * @param adder The address of the maintainer who add new maintainer.
-     * @param added The address of the new maintainer.
+     * @param maintainer The address of new the maintainer.
      */
-    event AddMaintainer(string indexed name, address adder, address added);
+    event AddMaintainer(string indexed name, address maintainer);
 
     /**
      * @notice Emitted when a maintainer is removed from a package.
      * @param name The name of the package.
-     * @param remover The address of who removed maintainer.
-     * @param removed The address of removed maintainer.
+     * @param maintainer The address of removed maintainer.
      */
-    event RemoveMaintainer(string indexed name, address remover, address removed);
+    event RemoveMaintainer(string indexed name, address maintainer);
 
     /**
      * @notice Emitted when a package's metadata is updated.
      * @param name The name of the package.
      * @param meta The new metadata (e.g., an IPFS hash).
      */
-    event UpdatePackageMeta(string name, string meta);
+    event UpdatePackageMeta(string indexed name, string meta);
 
-    /**
-     * @notice Emitted when a release note is updated for a specific version.
-     * @param name The name of the package.
-     * @param version The version of the release.
-     * @param releaseNote The new release note (e.g., an IPFS hash).
-     */
-    event UpdateReleaseNote(string name, SemVer.Version version, string releaseNote);
 
     // ==================== ERRORS ====================
 
-    error PackageAlreadyExist(string name);
+    error AlreadyExist(string key, string value);
     error PackageNotExist(string name);
     error ReleaseNotExist();
     error PackageNameInvalid(string rules, string value);
     error ZeroAddress(string field);
-    error VersionIncorrect();
     error VersionAlreadyExist();
     error PackageRegisterFeeRequire(uint256 fee);
     error PackageAccessDenied();
-    error IncorrectImplementationType(           
-        ImplementationType given,
-        ImplementationType _require
-    );
     error UnresolvedDependencies(string _error);
     error LastMaintainer();
-    error MaintainerNotFound(address maintainer);
     error Empty(string field);
-    error InvalidSemVer(string version);
     error PrereleaseHaveStable(string version);
     error VersionNotIncreasing(string newVersion, string lastVersion);
 
@@ -136,18 +120,11 @@ interface IEVMPack {
      * @notice Represents the implementation of a package.
      */
     struct Implementation {
-        ImplementationType implementation_type;
+        ImplementationType implementationType;
         address target;
         string selector;
     }
 
-    /**
-     * @notice Represents a dependency of a package.
-     */
-    struct Dependency {
-        string name;
-        string version;
-    }
 
     // ==================== FUNCTIONS ====================
 
@@ -184,36 +161,6 @@ interface IEVMPack {
     ) external;
 
     function addRelease(string calldata name, Release memory release) external;
-
-    function usePackageDeterm(
-        string calldata name,
-        string calldata versionString,
-        address owner,
-        bytes calldata initData,
-        string calldata salt
-    ) external returns (address);
-
-    function usePackage(
-        string calldata name,
-        string calldata versionString,
-        address owner,
-        bytes calldata initData
-    ) external returns (address);
-
-    function usePackageWithAdminDeterm(
-        string calldata name,
-        string calldata versionString,
-        address proxy_admin,
-        bytes calldata initData,
-        string calldata salt
-    ) external returns (address);
-
-    function usePackageWithAdmin(
-        string calldata name,
-        string calldata versionString,
-        address proxy_admin,
-        bytes calldata initData
-    ) external returns (address);
 
     function addMaintainer(string calldata name, address maintainer) external;
 

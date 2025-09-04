@@ -166,5 +166,6 @@ async function init() {
 
 module.exports = {
   init,
-  implTypes
+  implTypes,
+  packageTypes
 };

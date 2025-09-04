@@ -8,86 +8,84 @@ import "./EVMPackProxy.sol";
 import "./EVMPackProxyAdmin.sol";
 
 interface IEVMPackProxyFactory{
-    function usePackageReleaseDeterm(string calldata name, IEVMPack.Implementation memory implementation, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address);
-    function usePackageRelease(string calldata name, IEVMPack.Implementation memory implementation, string calldata version, address owner, bytes calldata initData) external returns(address);
-    function usePackageReleaseWithAdminDeterm(string calldata name, IEVMPack.Implementation memory implementation, string calldata version, address proxy_admin, bytes calldata initData, string memory salt) external returns(address);
-    function usePackageReleaseWithAdmin(string calldata name, IEVMPack.Implementation memory implementation, string calldata version, address proxy_admin, bytes calldata initData) external returns(address);
+    function usePackageRelease(string calldata name, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address);
 }
 
 contract EVMPackProxyFactory is IEVMPackProxyFactory {
 
+    IEVMPack _evmpack;
 
-    function usePackageReleaseDeterm(string calldata name, IEVMPack.Implementation memory implementation, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address){
+    error IncorrectImplementation();
+    error IncorrectOwner();
 
-
-        address proxy_admin = address(new EVMPackProxyAdmin(owner));
-
-        EVMPackProxy proxy = new EVMPackProxy{
-            salt: _salt(salt, initData)
-        }(
-            address(this),
-            name,
-            version,
-            implementation.target,
-            proxy_admin,
-            initData
-        );
-
-        return address(proxy);
+    constructor(address evmpack){
+        _evmpack = IEVMPack(evmpack);
     }
 
 
-    function usePackageRelease(string calldata name, IEVMPack.Implementation memory implementation, string calldata version, address owner, bytes calldata initData) external returns(address){
+    function usePackageRelease(string calldata name, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address){
+
+        if(owner == address(0)){
+            revert IncorrectOwner();
+        }
+
+        (, IEVMPack.Implementation memory impl) = _evmpack.getPackageRelease(name, version);
 
 
-        address proxy_admin = address(new EVMPackProxyAdmin(owner));
+        if(impl.target == address(0)){
+            revert IncorrectImplementation();
+        }
+        
+        address proxy_admin;
 
-        EVMPackProxy proxy = new EVMPackProxy(
-            address(this),
-            name,
-            version,
-            implementation.target,
-            proxy_admin,
-            initData
-        );
+        if(!isAdminContract(owner)){
+            proxy_admin = address(new EVMPackProxyAdmin(owner));
+        }else{
+            proxy_admin = owner;
+        }
+        
 
-        return address(proxy);
+        if(bytes(salt).length == 0 ){
+            EVMPackProxy proxy = new EVMPackProxy(
+                address(this),
+                name,
+                version,
+                impl.target,
+                proxy_admin,
+                initData
+            );
+
+            return address(proxy);
+        }else{
+            EVMPackProxy proxy = new EVMPackProxy{
+                salt: _salt(salt, initData)
+            }(
+                address(this),
+                name,
+                version,
+                impl.target,
+                proxy_admin,
+                initData
+            );
+
+            return address(proxy);
+        }
+
     }
 
 
+    function isAdminContract(address _addr) internal view returns (bool) {
+        try IERC165(_addr).supportsInterface(type(IEVMPackProxyAdmin).interfaceId) returns (bool success) {
+            if(success){
+                return true;
+            }else{
+                return false;
+            }
 
-    function usePackageReleaseWithAdminDeterm(string calldata name, IEVMPack.Implementation memory implementation, string calldata version, address proxy_admin, bytes calldata initData, string memory salt) external returns(address){
-
-        EVMPackProxy proxy = new EVMPackProxy{
-            salt: _salt(salt, initData)
-        }(
-            address(this),
-            name,
-            version,
-            implementation.target,
-            proxy_admin,
-            initData
-        );
-
-        return address(proxy);
+        } catch  {
+            return false;
+        }
     }
-
-    function usePackageReleaseWithAdmin(string calldata name, IEVMPack.Implementation memory implementation, string calldata version, address proxy_admin, bytes calldata initData) external returns(address){
-
-        EVMPackProxy proxy = new EVMPackProxy(
-            address(this),
-            name,
-            version,
-            implementation.target,
-            proxy_admin,
-            initData
-        );
-
-        return address(proxy);
-    }
-
-
-
 
     function _salt(string memory salt, bytes calldata initData) internal pure returns(bytes32){
         return keccak256(

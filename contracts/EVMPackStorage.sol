@@ -11,24 +11,20 @@ import { SemVer } from "./SemVer.sol";
  * @dev It uses the unstructured storage pattern to allow for future upgrades without storage collisions.
  */
 library EVMPackStorage {
-    bytes32 private constant EVMPACK_STORAGE = 
-        keccak256(abi.encode(uint256(keccak256("evmpack.storage")) - 1)) & ~bytes32(uint256(0xff));
-
+    // keccak256(abi.encode(uint256(keccak256("evmpack.storage")) - 1)) & ~bytes32(uint256(0xff));
+    bytes32 private constant EVMPACK_STORAGE = 0x008396c86f3ac5f3df851d8f0492af696762722a1221c7ae4c55b94bd223b400;
+        
     /**
      * @notice The main storage struct for the EVMPack system.
      */
     struct Storage {
         // Fee for package registration
         uint256 _package_register_fee;
-        // Address of the proxy factory
-        address _proxy_factory;
 
         // Core package storage
         mapping(string name => IEVMPack.Package) _packages;
-        mapping(string name => mapping(address => bool)) _isMaintainer;
-        mapping(string name => address[]) _maintainers;
-        mapping(string name => mapping(address => uint256)) _maintainerIndex;
-        
+        mapping(string name => address[]) _packageMaintainers;
+
         // Release storage - key: "name@version"
         mapping(string versionKey => IEVMPack.Release) _releases;
         
@@ -75,6 +71,6 @@ library EVMPackStorage {
         pure 
         returns (string memory) 
     {
-        return string(abi.encodePacked(name, "@", versionString));
+        return string.concat(name, "@", versionString);
     }
 }

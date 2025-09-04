@@ -11,7 +11,6 @@ const { ethers } = require('ethers');
 const { execSync } = require('child_process');
 const { implTypes } = require("./init");
 const { accountSelection } = require("./ui");
-const { verify } = require('crypto');
 
 async function prepareRelease(deployer, external_implementation_address, evmpackConfig, releaseConfig){
     
@@ -106,7 +105,7 @@ async function prepareRelease(deployer, external_implementation_address, evmpack
         }
 
         implementation = {
-            implementation_type: implTypes.indexOf(releaseConfig.implementation_type),
+            implementationType: implTypes.indexOf(releaseConfig.implementationType),
             target: implementationAddress,
             selector: releaseConfig.selector
         };
@@ -136,11 +135,11 @@ async function prepareRelease(deployer, external_implementation_address, evmpack
 
 async function addRelease(external_implementation_address = false) {
     const deployer = await accountSelection();
-    // 5. Get EVMPack contract instance
+    
     const evmPack = await getEVMPack(deployer);
 
     try {
-        // 1. Get package and release config
+        
         const packageConfig = loadConfig('evmpack.json');
         const releaseConfig = loadConfig('release.json');
 

@@ -23,7 +23,7 @@ interface IEVMPackProxy is IERC1967 {
      * @param version The new version to upgrade to.
      * @param data The data to pass to the new implementation.
      */
-    function upgradeToAndCall(uint24 version, bytes calldata data) external payable;
+    function upgradeToAndCall(string memory version, bytes calldata data) external payable;
 }
 
 /**
@@ -66,9 +66,11 @@ contract EVMPackProxy is ERC1967Proxy {
     constructor(address evmpack, string memory name,  string memory version, address _logic, address proxyAdmin, bytes memory _data) payable ERC1967Proxy(_logic, _data) {
         _admin = proxyAdmin;
         _evmpack = evmpack;
-        assembly {
+
+        assembly ("memory-safe") {
             sstore(_version.slot, keccak256(add(version, 0x20), mload(version)))
         }
+        
         _package = name;
         
         // Set the storage value and emit an event for ERC-1967 compatibility
@@ -102,13 +104,17 @@ contract EVMPackProxy is ERC1967Proxy {
      */
     function _dispatchUpgradeToAndCall() private {
         (string memory version, bytes memory data) = abi.decode(msg.data[4:], (string, bytes));
+        
         bytes32 new_version;
-        assembly {
+        
+        assembly ("memory-safe") {
             new_version := keccak256(add(version, 0x20), mload(version))
         }
+
         if(new_version == _version){
             revert SameVersion();
         }
+
         _version = new_version;
         
         (,IEVMPack.Implementation memory implementation) = IEVMPack(_evmpack).getPackageRelease(_package,version);

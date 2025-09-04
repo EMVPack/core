@@ -1,6 +1,11 @@
-# EVMPack: A Package Manager for the EVM
+# EVMPack: A not just Package Manager for the EVM, its Blockchain Project Lifecycle Management
 
-EVMPack is a decentralized package manager for EVM - compatible blockchains. It's designed to make the entire lifecycle of your smart contracts safer, more collaborative, and a lot more fun.
+EVMPack is an infrastructure project for the EVM that brings order and security to the lifecycle management of smart contracts. It combines a decentralized package registry with strong semantic versioning (SemVer 2.0.0), with a focus on securely updating implementations.
+
+Key benefits for security and reliability:
+- Transparent versioning: All available contract versions and their dependencies are recorded on-chain.
+- Controlled deployment: An integrated proxy factory ensures that new proxy contracts are created with predictable and verified implementations.
+- Decentralized governance: The right to publish new versions is strictly controlled by a list of maintainers. EVMPack is not just a dependency manager, but a framework for building fault-tolerant and easily maintainable decentralized systems.
 
 ## Why EVMPack?
 
@@ -8,12 +13,16 @@ Building on Ethereum can be a challenge. We have great tools for development and
 
 To learn more about the vision and passion behind EVMPack, check out our [**Motivation**](./MOTIVATION.md).
 
+## Beta 
+
+Currently this project in active development, now we support only op sepolia testnet. 
+
 ## Installation
 In feature!
-Getting started is easy. Just install the EVMPack CLI tool using npm:
+Getting started is easy. Just use the EVMPack CLI tool using npx:
 
 ```bash
-npm install -g evmpack
+npx evmpack status
 ```
 
 But now clone this repo, and:

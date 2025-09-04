@@ -4,15 +4,13 @@ Let's be honest. Building on Ethereum can be a pain. We have amazing tools like 
 
 ## The Deployment Hangover
 
-Once your code is live, you're in a constant state of low-key anxiety. Did you introduce a bug in the latest upgrade? Did you remember to point to the right implementation address? Is your storage about to get wrecked?
+Once your code is live, you're in a constant state of low-key anxiety. Did you introduce a bug in the latest upgrade? Did you accidentally specify the wrong implementation address? Broken storage?
 
 This isn't a sustainable way to build an ecosystem. We're spending too much time and money on audits, reinventing the wheel with the same boilerplate code, and struggling to find reusable components we can actually trust.
 
 ## It's Time for a Better Way
 
 EVMPack is our answer to this problem. It's not here to replace the tools you already love. It's here to make the entire lifecycle of your smart contracts safer, saner, and more collaborative.
-
-Think of it as a set of guardrails for the wild west of smart contract maintenance. It's about bringing the best parts of modern software development - like package management, versioning, and modularity - to the blockchain.
 
 With EVMPack, you can:
 

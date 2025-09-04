@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-process.env.EVM_PACK_ADDRESS = process.env.EVM_PACK_ADDRESS || "0x9C37Ca09cBb7FAE180B0C21aC3328450cFd81208"; // op-sepolia
+process.env.EVM_PACK_ADDRESS = process.env.EVM_PACK_ADDRESS || "0x95a0aA1a42c23AD27c2664826500ebEdA343c880"; // op-sepolia
+process.env.EVM_PACK_PROXY_FACTORY_ADDRESS = process.env.EVM_PACK_PROXY_FACTORY_ADDRESS || "0xC397FB7fBAd4633F876908FeedCe096Ac3f85887"
 process.env.EVM_PACK_NETWORK = process.env.EVM_PACK_NETWORK || process.env.RPC_OPSEPOLIA || "https://sepolia.optimism.io"
 process.env.STORAGE_API_KEY = process.env.STORAGE_API_KEY || "20C291cBB2eF8D6D6c344fd59c1D0B458a083a6A";
 process.env.STORAGE_ENDPOINT = process.env.STORAGE_ENDPOINT || "https://storage.evmpack.tech"

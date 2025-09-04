@@ -14,12 +14,11 @@ contract DeployScript is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         ProxyFactory proxyFactory = new ProxyFactory();
-        EVMPackProxyFactory evmpackProxyFactory = new EVMPackProxyFactory();
         EVMPack evmpackImplementation = new EVMPack();
         
         address dummyImplementation = 0x4e59b44847b379578588920cA78FbF26c0B4956C; // Nick's create2 factory
 
-        bytes32 salt = keccak256(abi.encodePacked("EVMPack.dev.v5"));
+        bytes32 salt = keccak256(abi.encodePacked("EVMPack.dev.v6"));
 
         (address proxy_admin, address proxyAddress) = proxyFactory.deploy(salt, address(dummyImplementation), vm.envAddress("EVMPACK_DEPLOYER_ADDRESS"), "");
 
@@ -30,11 +29,11 @@ contract DeployScript is Script {
             address(evmpackImplementation),
             abi.encodeWithSelector(
                 EVMPack.initialize.selector,
-                0,
-                address(evmpackProxyFactory)
+                0
             )
         );
 
+        EVMPackProxyFactory evmpackProxyFactory = new EVMPackProxyFactory(proxyAddress);
         vm.stopBroadcast();
 
         return (EVMPack(proxyAddress), admin, evmpackProxyFactory, proxyFactory);

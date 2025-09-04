@@ -44,8 +44,8 @@ function validateConfig(evmpackConfig, releaseConfig) {
             errors.push(`Cannot find ${releaseConfig.main_contract}.sol`);
         }
 
-        if(!releaseConfig.implementation_type){
-            errors.push('implementation_type is required in release.json');
+        if(!releaseConfig.implementationType){
+            errors.push('implementationType is required in release.json');
         }
 
         if(!releaseConfig.selector){

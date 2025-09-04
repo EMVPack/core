@@ -51,7 +51,25 @@ Semantic versioning is a powerful tool, but it can be a pain to manage manually.
 
 We'll have tools to automatically validate and bump your version numbers, so you can focus on writing code instead of worrying about whether you've followed the rules. We'll also create a set of guides and best practices to help you navigate the wonderful world of versioning.
 
+## 7. Create econnomic model
 
+There is no sustainable economic model yet, but there are the following thoughts that require discussion and careful analysis:
+
+*   **Fee for use** Those implementations that have passed the audit have great value, the developers have spent a huge amount of money on development and audit, they are responsible. By implementation, I mean not just a ready-made smart contract code, but a deployed smart contract implementation.
+And if another project pays for using such an implementation when using it, then at least it will pay off. Popular contracts will be able to make good money, and those who use it can easily prove that they are using an audited implementation of a specific smart contract.
+
+*   **Pay for public** Without any fee you can register package, but this package will be without public indexer, he will be just for you and your team. But if you ready to show for all comunnity? you should to pay some fee. this is protection from garbage packages and spam. 
+
+*   **Payment for achievements** When registering a package, you can pay for proof of verification by static analyzers (look at point №1), and get achivment NFT for your package, this may be enough for simple smart contracts. The achivment system can be easily scaled
+
+
+## 8. Audit code
+
+When we create first stable release we try to use this grant - https://atlas.optimism.io/missions/audit-grants 
+
+
+## 9. Deploy mainnet
+For main network we will be use optimism, but in the same time we deploy in all EVM networks. All  packages will be stored on optimistic network, and for implementations you can select one or more networks for register. Implementations will be with deterministic address
 
 # P.S
 

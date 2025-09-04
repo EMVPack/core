@@ -6,6 +6,7 @@ const {
 const { uploadFile } = require("./ipfs");
 const { accountSelection } = require("./ui");
 const { prepareRelease } = require("./release")
+const { packageTypes } = require("../lib/init")
 
 
 async function prepareAdd(deployer, external_implementation_address = false) {
@@ -25,6 +26,7 @@ async function prepareAdd(deployer, external_implementation_address = false) {
     const add = {
         name: evmpackConfig.name,
         meta: metaCid,
+        packageType: packageTypes.indexOf(evmpackConfig.type),
         release: release
     };
 

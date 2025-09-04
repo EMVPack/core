@@ -6,11 +6,19 @@ pragma solidity ^0.8.28;
 import {IEVMPackProxy} from "./EVMPackProxy.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
+
+interface IERC165 {
+    function supportsInterface(bytes4 interfaceId) external view returns (bool);
+}
+interface IEVMPackProxyAdmin is IERC165 {
+    function upgradeAndCall(IEVMPackProxy proxy, string memory version, bytes memory data) external payable;
+}
+
 /**
  * @dev This is an auxiliary contract meant to be assigned as the admin of a {TransparentUpgradeableProxy}. For an
  * explanation of why you would want to use this see the documentation for {TransparentUpgradeableProxy}.
  */
-contract EVMPackProxyAdmin is Ownable {
+contract EVMPackProxyAdmin is IEVMPackProxyAdmin, Ownable {
     /**
      * @dev The version of the upgrade interface of the contract. If this getter is missing, both `upgrade(address,address)`
      * and `upgradeAndCall(address,address,bytes)` are present, and `upgrade` must be used if no function should be called,
@@ -26,6 +34,9 @@ contract EVMPackProxyAdmin is Ownable {
      */
     constructor(address initialOwner) Ownable(initialOwner) {}
 
+    function supportsInterface(bytes4 interfaceId) public pure returns (bool) {
+        return (type(IEVMPackProxyAdmin).interfaceId == interfaceId);
+    }
     /**
      * @dev Upgrades `proxy` to `implementation` and calls a function on the new implementation.
      * See {TransparentUpgradeableProxy-_dispatchUpgradeToAndCall}.
@@ -37,7 +48,7 @@ contract EVMPackProxyAdmin is Ownable {
      */
     function upgradeAndCall(
         IEVMPackProxy proxy,
-        uint24 version,
+        string memory version,
         bytes memory data
     ) public payable virtual onlyOwner {
         proxy.upgradeToAndCall{value: msg.value}(version, data);
