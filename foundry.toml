@@ -6,6 +6,9 @@ evm_version = "prague"
 bytecode_hash = "none"
 via_ir = true
 out = "artifacts"
+remappings = [
+    "@evmpack=/home/darkrain/.evmpack/packages"
+]
 
 [rpc_endpoints]
 opsepolia = "${RPC_OPSEPOLIA}"

@@ -33,7 +33,7 @@ contract EVMPack is IEVMPack, Initializable {
      * @return The version string.
      */
     function getVersion() public pure returns (string memory) {
-        return "1.0.0";
+        return "1.0.0-beta.1";
     }
 
     /**

@@ -14,7 +14,7 @@ This is the main contract of the EVMPack system. It manages the registration and
 
 #### Functions
 
-- `initialize(uint256 fee, address proxy_factory)`: Initializes the contract with a registration fee and a proxy factory address.
+- `initialize(uint256 fee)`: Initializes the contract with a registration fee.
 - `getVersion()`: Returns the version of the EVMPack contract.
 - `getRegisterFee()`: Returns the package registration fee.
 - `getPackageRelease(string calldata name, string calldata versionString)`: Returns the release and implementation details for a specific package version.
@@ -26,10 +26,6 @@ This is the main contract of the EVMPack system. It manages the registration and
 - `registerLibrary(Add memory add)`: Registers a new library package.
 - `addRelease(string calldata name, Release memory release, Implementation memory implementation)`: Adds a new release for an existing package.
 - `addRelease(string calldata name, Release memory release)`: Adds a new release for an existing library package.
-- `usePackageDeterm(string calldata name, string calldata versionString, address owner, bytes calldata initData, string calldata salt)`: Deploys a new instance of a package with a deterministic address.
-- `usePackage(string calldata name, string calldata versionString, address owner, bytes calldata initData)`: Deploys a new instance of a package.
-- `usePackageWithAdminDeterm(string calldata name, string calldata versionString, address proxy_admin, bytes calldata initData, string calldata salt)`: Deploys a new instance of a package with a deterministic address and a specified admin.
-- `usePackageWithAdmin(string calldata name, string calldata versionString, address proxy_admin, bytes calldata initData)`: Deploys a new instance of a package with a specified admin.
 - `addMaintainer(string calldata name, address maintainer)`: Adds a new maintainer to a package.
 - `removeMaintainer(string calldata name, address maintainer)`: Removes a maintainer from a package.
 - `updatePackageMeta(string calldata name, string calldata meta)`: Updates the metadata of a package.
@@ -59,7 +55,6 @@ This interface defines the data structures, events, and functions for the EVMPac
 - `AddMaintainer`: Emitted when a maintainer is added.
 - `RemoveMaintainer`: Emitted when a maintainer is removed.
 - `UpdatePackageMeta`: Emitted when a package's metadata is updated.
-- `UpdateReleaseNote`: Emitted when a release note is updated.
 
 ### `SemVer.sol`
 
@@ -86,7 +81,50 @@ This contract is the admin for the `EVMPackProxy`.
 
 ### `EVMPackProxyFactory.sol`
 
-This contract is a factory for deploying new `EVMPackProxy` instances.
+This contract is a factory for deploying new `EVMPackProxy` instances. It simplifies the process of deploying a new proxy contract for a specific package release.
+
+When you want to use a package from the EVMPack registry in your own smart contracts, you should use the `EVMPackProxyFactory` to create a new proxy instance of the package's implementation. This ensures that you are using the correct and verified version of the package.
+
+#### How to use
+
+To use the factory, you need to call the `usePackageRelease` function with the following parameters:
+
+- `name`: The name of the package.
+- `version`: The version of the package to use.
+- `owner`: The owner of the new proxy contract. If this address is a contract that implements the `IEVMPackProxyAdmin` interface, it will be used as the admin for the new proxy. Otherwise, a new `EVMPackProxyAdmin` contract will be deployed with the provided address as its owner.
+- `initData`: The initialization data for the proxy contract.
+- `salt`: A unique salt for creating a deterministic address (optional).
+
+The function will return the address of the newly created proxy contract.
+
+Here is an example of how to use the `EVMPackProxyFactory` in your smart contract:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+import { IEVMPackProxyFactory } from "@evmpack/evmpack-1.0.0-beta.1/contracts/EVMPackProxyFactory.sol";
+import { EVMPackAddreses } from "@evmpack/evmpack-1.0.0-beta.1/contracts/EVMPackAddreses.sol";
+
+contract MyContract {
+    IEVMPackProxyFactory evmpackFactory;
+
+    constructor() {
+        evmpackFactory = IEVMPackProxyFactory(EVMPackAddreses.PROXY_FACTORY);
+    }
+
+    function deployMyPackage() public {
+        address myPackage = evmpackFactory.usePackageRelease(
+            "my-package",
+            "1.0.0",
+            msg.sender,
+            abi.encodeWithSignature("initialize()"),
+            ""
+        );
+        // Now you can interact with myPackage
+    }
+}
+```
 
 ### `ProxyFactory.sol`
 
