@@ -42,7 +42,7 @@ yargs(hideBin(process.argv))
             fs.mkdirSync(process.cwd()+"/node_modules");
         }
           
-        await createSymlink(process.env.EVM_PACK_DIR+'/packages', './lib/@evmpack');
+        await createSymlink(process.env.EVM_PACK_DIR+'/packages', './@evmpack');
     })    
     .command('generate-release-note', "Use gemini for generate release_note.md", () => {}, async function(){
         console.log("Gemini auto generate release_note.md")
