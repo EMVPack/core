@@ -9,18 +9,29 @@ pragma solidity ^0.8.28;
 interface IEVMPackProvider {
 
     /// @notice Handshake agreement parameters
-    /// @param date_expire Expiration timestamp of handshake
+    /// @param dateExpire Expiration timestamp of handshake
     /// @param account User address initiating handshake
     /// @param provider Service provider address
-    /// @param provider_approved Provider acceptance status
+    /// @param providerApproved Provider acceptance status
     /// @param revoked Manual revocation status
     struct Handshake {
-        uint256 date_expire;
+        uint256 deposit;
+        uint256 coastPerDay;
+        string hello; // encrypted ipfs json document
+        uint256 createDate;
+        uint32 commitIndex;
+        uint256 dateExpire;
         address account;
         address provider;
-        string aes256_key;
-        bool provider_approved;
+        string aes256Key;
+        bool providerApproved;
         bool revoked;
+        bool suspended;
+    }
+
+    struct Commit {
+        uint256 amount;
+        uint256 timestamp;
     }
 
     /// @notice Provider operational data
@@ -32,50 +43,52 @@ interface IEVMPackProvider {
         Provider info;
         uint256 deposit;
         uint256 rate;
-        bool online;
+        bool exist;
     }
 
     /// @notice Provider service configuration
-    /// @param public_key Encryption public key
+    /// @param publicKey Encryption public key
     /// @param meta JSON document about of service
+    /// @param handshakeCoastPerDay Base price per message
     /// @param getway Gateway settings
     struct Provider {
-        string public_key;
+        string publicKey;
         string meta;
+        uint256 handshakeCoastPerDay;
         ProviderGetway getway;
     }
 
     /// @notice Gateway-specific configuration
     /// @param enable Gateway activation status
     /// @param endpoints Array of endpoints RPC, REST, WS and other
-    /// @param cost_per_message Base price per message
-    /// @param time_between_retry Minimum retry interval in seconds
+    /// @param timeBetweenRetry Minimum retry interval in seconds
     struct ProviderGetway {
         bool enable;
         string[] endpoints;
-        uint256 cost_per_message;
-        uint256 time_between_retry;
+        uint256 timeBetweenRetry;
     }
 
     /// @notice Service governance parameters
-    /// @param min_provider_deposit Minimum security deposit for providers
-    /// @param processing_time Maximum allowed processing duration
-    /// @param punishment_coast Penalty amount for SLA violations
+    /// @param minProviderDeposit Minimum security deposit for providers
+    /// @param defaultHandshakeExpire Maximum allowed processing duration
+    /// @param meta Penalty amount for SLA violations
     struct ServiceSettings {
-        uint256 min_provider_deposit;
-        uint256 processing_time;
-        uint256 punishment_coast;
+        uint256 minProviderDeposit;
+        uint16 defaultHandshakeExpire; // in days
+        string helloForm;
+        string meta;
     }
+
     
     // Custom errors
     
     /// @notice Insufficient provider deposit during registration
-    /// @param min_provider_deposit Required minimum deposit amount
-    error MinimumProviderDeposit(uint256 min_provider_deposit);
+    /// @param minProviderDeposit Required minimum deposit amount
+    error MinimumProviderDeposit(uint256 minProviderDeposit);
     
     /// @notice Expired handshake usage attempt
-    /// @param date_expire Handshake expiration timestamp
-    error HandshakeDateExpire(uint256 date_expire);
+    /// @param dateExpire Handshake expiration timestamp
+    error HandshakeDateExpire(uint256 dateExpire);
     
     /// @notice Attempt to use revoked handshake
     error HandshakeRevoked();
@@ -83,15 +96,16 @@ interface IEVMPackProvider {
     /// @notice Attempt to use unapproved handshake
     error HandshakeNotAprooved();
     
+    error HandshakeAmountFailed(uint256 required, uint256 given);
     /// @notice Insufficient payment for message delivery
     /// @param required Expected payment amount
     /// @param given Actual payment amount
     error InsufficientFunds(uint256 required, uint256 given);
     
     /// @notice Early retry attempt detection
-    /// @param time_between_retry Required waiting period
-    /// @param current_time Time since last attempt
-    error Timeout(uint256 time_between_retry, uint256 current_time);
+    /// @param timeBetweenRetry Required waiting period
+    /// @param currentTime Time since last attempt
+    error Timeout(uint256 timeBetweenRetry, uint256 currentTime);
     
     
     /// @notice Provider deposit depletion
@@ -105,10 +119,10 @@ interface IEVMPackProvider {
     
     /// @notice Invalid handshake reference
     /// @param object Context object type
-    /// @param object_id Handshake identifier
-    error HandshakeNotFound(string object, bytes32 object_id);
+    /// @param objectId Handshake identifier
+    error HandshakeNotFound(string object, bytes32 objectId);
     
-    error AlreadyExistProvider(string provider);
+    error AlreadyExist(string reason);
     
     /// @notice Missing enabled gateways
     error NoGetwayEnabled();
@@ -153,13 +167,15 @@ interface IEVMPackProvider {
     /// @param status Online status
     event ChangeProviderStatus(address indexed provider, bool status);
 
+    event CommitHandshake(bytes32 indexed handshake, uint32 commitIndex, uint256 amount);
+
+    event ExtendHandshake(bytes32 indexed handshake, uint16 _days, uint256 amount);
+
     function getServiceInfo() external view returns(ServiceSettings memory);
-    function changeProcessingTime(uint256 processing_time) external;
-    function changeMinProviderDeposit(uint256 min_provider_deposit) external;
+    function changeMinProviderDeposit(uint256 minProviderDeposit) external;
     function registerProvider(Provider calldata provider) payable external;
-    function setProviderOnlineStatus(bool status) external;
     function getProvider(address provider) external view returns(ProviderData memory);
-    function requestUserHandshakeWithProvider(string calldata aes_key, address provider) external;
+    function requestUserHandshakeWithProvider(string calldata aes256Key, address provider, string calldata hello, uint16 period) payable external;
     function responseUserHandshakeWithProvider(bytes32 handshake, bool status) external;
     function revokeHandshake(bytes32 handshake)  external;
     function getHandshake(bytes32 handshake) external view returns(Handshake memory);

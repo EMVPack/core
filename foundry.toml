@@ -12,3 +12,4 @@ remappings = [
 
 [rpc_endpoints]
 opsepolia = "${RPC_OPSEPOLIA}"
+sepolia = "https://1rpc.io/sepolia"
