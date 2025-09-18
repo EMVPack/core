@@ -74,8 +74,7 @@ interface IEVMPack {
      */
     enum PackageType {
         Implementation,
-        Library,
-        Service
+        Library
     }
 
     /**

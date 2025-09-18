@@ -2,11 +2,11 @@
 pragma solidity ^0.8.28;
 
 /**
- * @title Provider Interface
+ * @title Service Interface
  * @notice Defines core structures, events and errors for message delivery system
- * @dev Serves as foundation for Provider contract implementation
+ * @dev Serves as foundation for Service contract implementation
  */
-interface IEVMPackProvider {
+interface IEVMPackService {
 
     /// @notice Handshake agreement parameters
     /// @param dateExpire Expiration timestamp of handshake
@@ -15,8 +15,8 @@ interface IEVMPackProvider {
     /// @param providerApproved Provider acceptance status
     /// @param revoked Manual revocation status
     struct Handshake {
+        uint256 tariffId;
         uint256 deposit;
-        uint256 coastPerDay;
         string hello; // encrypted ipfs json document
         uint256 createDate;
         uint32 commitIndex;
@@ -37,45 +37,48 @@ interface IEVMPackProvider {
     /// @notice Provider operational data
     /// @param info Provider configuration details
     /// @param deposit Security deposit amount
-    /// @param rate Performance rating score
     /// @param online Show provider status
     struct ProviderData {
         Provider info;
         uint256 deposit;
-        uint256 rate;
+        uint64 active_handshakes;
+        uint256 total_handshakes;
+        uint256 total_money_recived;
+        uint256 tariff_count;
         bool exist;
     }
 
     /// @notice Provider service configuration
-    /// @param publicKey Encryption public key
+    /// @param publicKey Encryption public key for handshake
     /// @param meta JSON document about of service
-    /// @param handshakeCoastPerDay Base price per message
+    /// @param handshakeCoastPerDay Base price per day
     /// @param getway Gateway settings
     struct Provider {
         string publicKey;
         string meta;
-        uint256 handshakeCoastPerDay;
-        ProviderGetway getway;
+        string[] endpoints;
     }
 
-    /// @notice Gateway-specific configuration
-    /// @param enable Gateway activation status
-    /// @param endpoints Array of endpoints RPC, REST, WS and other
-    /// @param timeBetweenRetry Minimum retry interval in seconds
-    struct ProviderGetway {
-        bool enable;
-        string[] endpoints;
-        uint256 timeBetweenRetry;
+    struct Tariff {
+        string title;
+        string info; // json doc
+        uint16 freeDays; // Freemium
+        uint16 minHandshakeDays;
+        uint256 handshakeCoastPerDay;
+        bool disabled;
     }
 
     /// @notice Service governance parameters
     /// @param minProviderDeposit Minimum security deposit for providers
     /// @param defaultHandshakeExpire Maximum allowed processing duration
-    /// @param meta Penalty amount for SLA violations
+    /// @param helloForm Json schema for handshake  
+    /// @param tariffForm Json schema for tariff element 
+    /// @param meta Json document for all additional information like postman schema or something else
     struct ServiceSettings {
         uint256 minProviderDeposit;
         uint16 defaultHandshakeExpire; // in days
         string helloForm;
+        string tariffForm;
         string meta;
     }
 
@@ -97,16 +100,6 @@ interface IEVMPackProvider {
     error HandshakeNotAprooved();
     
     error HandshakeAmountFailed(uint256 required, uint256 given);
-    /// @notice Insufficient payment for message delivery
-    /// @param required Expected payment amount
-    /// @param given Actual payment amount
-    error InsufficientFunds(uint256 required, uint256 given);
-    
-    /// @notice Early retry attempt detection
-    /// @param timeBetweenRetry Required waiting period
-    /// @param currentTime Time since last attempt
-    error Timeout(uint256 timeBetweenRetry, uint256 currentTime);
-    
     
     /// @notice Provider deposit depletion
     error ProviderDepositExhausted();
@@ -132,6 +125,12 @@ interface IEVMPackProvider {
 
     /// @notice Provider not found
     error ProviderNotFound();
+
+    error TariffNotFound(uint256 tariff_id);
+
+    error IncorrectPeriod(uint16 min, uint16 given);
+    error TariffMinHandshakeDays();
+    error TariffDisabled();
 
     // Events
     

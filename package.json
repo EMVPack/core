@@ -4,6 +4,8 @@
   "scripts": {
     "deploy:opsepolia": "forge script script/Deploy.s.sol:DeployScript --rpc-url opsepolia -v ",
     "deploy:opsepolia:broadcast": "forge script script/Deploy.s.sol:DeployScript --rpc-url opsepolia -v --broadcast",
+    "deploy:sepolia": "forge script script/Deploy.s.sol:DeployScript --rpc-url sepolia -v ",
+    "deploy:sepolia:broadcast": "forge script script/Deploy.s.sol:DeployScript --rpc-url sepolia -v --broadcast",
     "upgrade:opsepolia": "forge script script/Upgrade.s.sol:UpgradeScript --rpc-url opsepolia --private-key $EVMPACK_PRIVATE_KEY -vvvv --sig 'run(address)' 0xF7880cF12bA6ce5EFB4f8131C3831582780E39a2",
     "upgrade:opsepolia:broadcast": "forge script script/Upgrade.s.sol:UpgradeScript --rpc-url opsepolia --private-key $EVMPACK_PRIVATE_KEY -vvvv --sig 'run(address)' 0xF7880cF12bA6ce5EFB4f8131C3831582780E39a2 --broadcast",
     "test:contracts": "forge test",

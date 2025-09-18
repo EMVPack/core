@@ -20,3 +20,4 @@ ignition/deployments/chain-31337
 # EVMPack files
 /broadcast
 /test_output.log
+graph/
