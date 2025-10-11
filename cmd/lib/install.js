@@ -10,6 +10,7 @@ const { loadConfig, saveConfig } = require('./config');
 
 // Main entry point for the install command
 async function install(packageName, versionRange) {
+
     const lockfile = readLockfile();
 
     if (packageName) {
@@ -26,14 +27,16 @@ async function install(packageName, versionRange) {
         const config = loadConfig('release.json');
         const newLockfile = { packages: {} };
         if (config.dependencies) {
-            for (const [name, range] of Object.entries(config.dependencies)) {
-                await addPackageToLock(name, range, newLockfile);
+            for (const name of Object.keys(config.dependencies)) {
+                await addPackageToLock(name, config.dependencies[name], newLockfile);
             }
         }
     }
 }
 
-async function addPackageToLock(packageName, versionRange, lockfile) {
+async function addPackageToLock(packageName, versionRange, lockfile, saveRelease = true) {
+
+
     const exactVersion = await resolveVersion(packageName, versionRange);
     if (!exactVersion) {
         throw new Error(`Could not resolve a version for ${packageName}@${versionRange}`);
@@ -62,7 +65,7 @@ async function addPackageToLock(packageName, versionRange, lockfile) {
     // Recursively add dependencies
     if (release.dependencies) {
         for (const key of Object.keys(release.dependencies)) {
-            await addPackageToLock(release.dependencies[key][0], release.dependencies[key][1], lockfile);
+            await addPackageToLock(release.dependencies[key].name, release.dependencies[key].version, lockfile, false);
         }
     }
 
@@ -76,8 +79,10 @@ async function addPackageToLock(packageName, versionRange, lockfile) {
     // Update release.json for the top-level package
     const config = loadConfig('release.json');
     if (!config.dependencies) config.dependencies = {};
-    config.dependencies[packageName] = versionRange;
-    saveConfig('release.json', config);
+    config.dependencies[packageName] = "^"+release.version;
+
+    if(saveRelease)
+        saveConfig('release.json', config);
 }
 
 async function installFromLockfile(lockfile) {

@@ -4,6 +4,8 @@ const { loadConfig } = require('./config');
 const { execSync } = require('child_process');
 const os = require('os');
 
+const { createSymlink } = require("./utils");
+
 async function compile() {
     try {
         execSync('command -v forge');
@@ -66,9 +68,15 @@ async function compile() {
         `--remappings  @evmpack=${os.homedir()}/.evmpack/packages`
     ].join(' ');
 
+    
+
     try {
         console.log(`Executing: ${command}`);
+        execSync('rm -f @evmpack')
         execSync(command, { stdio: 'inherit' });
+                  
+        await createSymlink(process.env.EVM_PACK_DIR+'/packages', './@evmpack');
+
         console.log('Compilation finished successfully.');
     } catch {
         console.error('Compilation failed');
