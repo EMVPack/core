@@ -2,13 +2,29 @@ var $ = window.jsrender;
 const router = new Navigo('/');
 const app = document.getElementById('app');
 const templates = {}; // Cache for compiled templates
+const converter = new showdown.Converter({tables:true, tablesHeaderId: true});
 
 // --- Preload and Process Config ---
 async function preloadTemplates(paths) {
     for (const path of paths) {
         try {
-            const response = await fetch(`/templates/${path}.html`);
-            const templateString = await response.text();
+
+            let template = `/templates/${path}`;
+            let isMarkdown = false;
+            if(path.split(".md").length == 2){
+                isMarkdown = true;
+            }
+
+            if(!isMarkdown)
+                template += ".html";
+
+            const response = await fetch(template);
+            let templateString = await response.text();
+
+            if(isMarkdown){
+                templateString = converter.makeHtml(templateString)
+            }   
+
             templates[path] = $.templates(templateString);
         } catch (error) {
             console.error(`Failed to load template: ${path}`, error);
@@ -55,6 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
     collectTemplates(config.routes);
+
+    
     await preloadTemplates(Array.from(templatePaths));
 
     // 3. Recursive Router Setup

@@ -6,8 +6,8 @@ const featureData = [
     },
     {
         icon: '&#128273;',
-        title: 'Secure and Reliable',
-        description: 'Ensures integrity and provenance of smart contract packages.'
+        title: 'Reuseble',
+        description: 'Use already deployed contracts implementations like ERC20.'
     },
     {
         icon: '&#128279;',
@@ -17,35 +17,47 @@ const featureData = [
 ];
 
 const config = {
-    // Global templates that are not pages or layouts themselves
-    templates: ['feature', 'menu', 'menu-item', 'components/sidebar'],
+    templates: ['components/feature', 'components/menu', 'components/menu-item', 'components/sidebar', 'components/hero'],
 
     routes: {
         '/': {
             title: 'EVMPack - Home',
             layout: 'layouts/main',
             page: 'pages/home',
-            data: { features: featureData },
+            data: { features: featureData, github: "https://github.com/EMVPack/core/" },
             menuTitle: 'Home'
         },
         '/about': {
             title: 'About EVMPack',
-            layout: 'layouts/main',
-            page: 'pages/about',
+            layout: 'layouts/sidebar',
+            page: 'pages/about.md',
             data: {},
             menuTitle: 'About'
         },
-        '/settings': {
-            title: 'Settings',
-            layout: 'layouts/sidebar', // Changed from settings to sidebar
-            page: 'pages/settings/overview',
-            menuTitle: 'Settings',
+        '/roadmap': {
+            title: 'Roadmap',
+            layout: 'layouts/sidebar',
+            page: 'pages/roadmap.md',
+            data: {},
+            menuTitle: 'Roadmap'
+        },        
+        '/documentation': {
+            title: '🚀 Getting Started',
+            layout: 'layouts/sidebar', 
+            page: 'pages/documentation/overview.md',
+            menuTitle: '🚀 Getting Started',
             children: {
-                '/profile': {
-                    title: 'Settings - Profile',
-                    // layout property removed to allow inheritance
-                    page: 'pages/settings/profile',
-                    menuTitle: 'Profile'
+                '/init': {
+                    title: 'Init package',
+                    layout: 'layouts/sidebar', 
+                    page: 'pages/documentation/init.md',
+                    menuTitle: 'Init package'
+                },
+                '/install_dependencies': {
+                    title: 'Install dependencies',
+                    layout: 'layouts/sidebar', 
+                    page: 'pages/documentation/install_dependencies.md',
+                    menuTitle: 'Install dependencies'
                 }
             }
         }

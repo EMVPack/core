@@ -1,35 +1,59 @@
-        body {
-            background-color: #f8f9fa;
-        }
-        .hero {
-            background-color: #343a40;
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-        .feature-icon {
-            font-size: 2.5rem;
-            color: #0d6efd;
-        }
-        .code-snippet {
-            background-color: #212529;
-            color: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            position: relative;
-        }
-        .code-snippet pre {
-            margin: 0;
-            font-size: 0.9rem;
-        }
-        .copy-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-        .copy-btn:hover {
-            background-color: #5a6268;
-            border-color: #5a6268;
-        }
+body {
+    background-color: var(--app-main-color);
+}
+.hero {
+    background-color: var(--app-main-color);
+    color: black;
+    padding: 4rem 2rem;
+    text-align: center;
+    
+
+    .logo {
+        background-image: var(--logo);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        min-height: 200px;
+        margin-bottom: 20px;
+    }
+    .btn {
+        margin-right: 0 auto;
+        margin-left:15px;
+        margin-right: 15px;
+    }
+}
+
+
+.sidebar .logo {
+    background-image: var(--logo-dark);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    min-height: 60px;
+    margin-bottom: 20px;
+    margin-left:20px;   
+}
+
+.sidebar a.nav-link {
+    color: white;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: #0d6efd;
+}
+pre {
+    background-color: black;
+    color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    position: relative;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+
+}
+
+.page-content h1, .page-content h2, .page-content h3, .page-content h4, .page-content p {margin-bottom: 30px;}
+.page-content pre {max-width: 900px}
+.page-content table {margin-bottom: 30px;}
+.page-content td, .page-content th {padding: 10px; border: #5a6268 1px solid;}
