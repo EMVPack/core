@@ -1,16 +1,24 @@
 var $ = window.jsrender;
+const router = new Navigo('/');
+const app = document.getElementById('app');
+const templates = {}; // Cache for compiled templates
 
-function copyCode() {
-    const code = document.querySelector('.code-snippet pre code').innerText;
-    navigator.clipboard.writeText(code).then(() => {
-        alert('Code copied to clipboard!');
-    }, (err) => {
-        alert('Failed to copy code.');
-    });
+// --- Preload all templates ---
+async function preloadTemplates(paths) {
+    for (const path of paths) {
+        try {
+            const response = await fetch(`templates/${path}.html`);
+            const templateString = await response.text();
+            templates[path] = $.templates(templateString);
+        } catch (error) {
+            console.error(`Failed to load template: ${path}`, error);
+        }
+    }
 }
 
-document.addEventListener("DOMContentLoaded", async function() {
-    const features = [
+// --- Page-specific rendering logic ---
+function renderFeatures() {
+    const featureData = [
         {
             icon: '&#128230;',
             title: 'On-chain Package Manager',
@@ -27,30 +35,54 @@ document.addEventListener("DOMContentLoaded", async function() {
             description: 'Works with your existing developer tools like Hardhat and Foundry.'
         }
     ];
-
-    try {
-        // 1. Fetch the main layout
-        const layoutResponse = await fetch('templates/layouts/main.html');
-        const layoutHtml = await layoutResponse.text();
-
-        // 2. Render the main layout into the #app div
-        document.getElementById("app").innerHTML = layoutHtml;
-
-        // 3. Fetch the feature template
-        const featureTmplResponse = await fetch('templates/feature.html');
-        const featureTmplString = await featureTmplResponse.text();
-
-        // 4. Compile the feature template
-        const template = $.templates(featureTmplString);
-
-        // 5. Render the features
-        const htmlOutput = template.render(features);
-
-        // 6. Insert the rendered features into the container
-        document.getElementById("featuresContainer").innerHTML = htmlOutput;
-
-    } catch (error) {
-        console.error('Failed to load templates:', error);
-        document.getElementById("app").innerHTML = '<p class="text-center text-danger">Error loading page content.</p>';
+    if (templates['feature'] && document.getElementById('featuresContainer')) {
+        const featuresHtml = templates['feature'].render(featureData);
+        document.getElementById('featuresContainer').innerHTML = featuresHtml;
     }
+}
+
+// --- Routes Configuration ---
+const routes = {
+    '/': {
+        title: 'EVMPack - Home',
+        template: 'layouts/main',
+        onAfterRender: renderFeatures
+    }
+};
+
+// --- Global functions (must be on window object to be called from HTML) ---
+window.copyCode = function() {
+    const code = document.querySelector('.code-snippet pre code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+        alert('Code copied to clipboard!');
+    }, (err) => {
+        alert('Failed to copy code.');
+    });
+}
+
+// --- Main execution block ---
+document.addEventListener("DOMContentLoaded", async () => {
+    await preloadTemplates(['layouts/main', 'feature']);
+
+    // Set up router
+    for (const path in routes) {
+        const route = routes[path];
+        router.on(path, () => {
+            document.title = route.title;
+            if (templates[route.template]) {
+                const layoutHtml = templates[route.template].render();
+                app.innerHTML = layoutHtml;
+                if (route.onAfterRender) {
+                    route.onAfterRender();
+                }
+            } else {
+                 app.innerHTML = `<p class="text-center text-danger">Error: Layout template for ${path} not found.</p>`;
+            }
+        });
+    }
+
+    router.notFound(() => {
+        document.title = '404 Not Found';
+        app.innerHTML = '<h2 class="text-center py-5">404 Not Found</h2>';
+    }).resolve();
 });
