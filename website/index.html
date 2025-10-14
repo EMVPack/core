@@ -21,22 +21,8 @@
 
     <!-- Features Section -->
     <div class="container py-5">
-        <div class="row text-center">
-            <div class="col-md-4">
-                <span class="feature-icon">&#128230;</span>
-                <h3 class="mt-3">On-chain Package Manager</h3>
-                <p>Manage your smart contract packages directly on the blockchain.</p>
-            </div>
-            <div class="col-md-4">
-                <span class="feature-icon">&#128273;</span>
-                <h3 class="mt-3">Secure and Reliable</h3>
-                <p>Ensures integrity and provenance of smart contract packages.</p>
-            </div>
-            <div class="col-md-4">
-                <span class="feature-icon">&#128279;</span>
-                <h3 class="mt-3">Seamless Integration</h3>
-                <p>Works with your existing developer tools like Hardhat and Foundry.</p>
-            </div>
+        <div id="featuresContainer" class="row text-center">
+            <!-- Features will be rendered here by JsRender -->
         </div>
     </div>
 
@@ -54,7 +40,17 @@ $ npx evmpack link @openzeppelin/contracts-upgradeable</code></pre>
         <p>&copy; 2025 EVMPack. All Rights Reserved.</p>
     </footer>
 
+    <!-- JsRender Template for Features -->
+    <script id="featureTemplate" type="text/x-jsrender">
+        <div class="col-md-4">
+            <span class="feature-icon">{{:icon}}</span>
+            <h3 class="mt-3">{{:title}}</h3>
+            <p>{{:description}}</p>
+        </div>
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsrender@1.0.16/jsrender.min.js"></script>
     <script src="js/main.js"></script>
 
 </body>
