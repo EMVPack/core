@@ -1,0 +1,12 @@
+{{props ~routes}}
+    {{if prop.menuTitle}}
+        <li class="nav-item">
+            <a href="{{:prop.fullPath}}" class="nav-link" data-navigo>{{:prop.menuTitle}}</a>
+            {{if prop.children}}
+                <ul class="nav flex-column ms-3">
+                    {{include tmpl=~templates['menu-item'] ~routes=prop.children/}}
+                </ul>
+            {{/if}}
+        </li>
+    {{/if}}
+{{/props}}

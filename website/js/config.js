@@ -18,7 +18,7 @@ const featureData = [
 
 const config = {
     // Global templates that are not pages or layouts themselves
-    templates: ['feature'],
+    templates: ['feature', 'menu', 'menu-item', 'components/sidebar'],
 
     routes: {
         '/': {
@@ -30,10 +30,24 @@ const config = {
         },
         '/about': {
             title: 'About EVMPack',
-            layout: 'layouts/sidebar',
+            layout: 'layouts/main',
             page: 'pages/about',
             data: {},
             menuTitle: 'About'
+        },
+        '/settings': {
+            title: 'Settings',
+            layout: 'layouts/sidebar', // Changed from settings to sidebar
+            page: 'pages/settings/overview',
+            menuTitle: 'Settings',
+            children: {
+                '/profile': {
+                    title: 'Settings - Profile',
+                    // layout property removed to allow inheritance
+                    page: 'pages/settings/profile',
+                    menuTitle: 'Profile'
+                }
+            }
         }
     }
 };

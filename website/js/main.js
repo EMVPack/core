@@ -3,7 +3,7 @@ const router = new Navigo('/');
 const app = document.getElementById('app');
 const templates = {}; // Cache for compiled templates
 
-// --- Preload all templates ---
+// --- Preload and Process Config ---
 async function preloadTemplates(paths) {
     for (const path of paths) {
         try {
@@ -12,6 +12,19 @@ async function preloadTemplates(paths) {
             templates[path] = $.templates(templateString);
         } catch (error) {
             console.error(`Failed to load template: ${path}`, error);
+        }
+    }
+}
+
+function processRoutes(routes, parentPath = '') {
+    for (const path in routes) {
+        const route = routes[path];
+        // Create the full, absolute path for the route
+        const fullPath = `${parentPath}${path}`;
+        route.fullPath = (fullPath === '/') ? '/' : fullPath.replace(/\/$/, '');
+
+        if (route.children) {
+            processRoutes(route.children, route.fullPath);
         }
     }
 }
@@ -28,36 +41,47 @@ window.copyCode = function() {
 
 // --- Main execution block ---
 document.addEventListener("DOMContentLoaded", async () => {
-    // Dynamically build the list of templates to load from config
+    // 1. Process routes to add fullPath property
+    processRoutes(config.routes);
+
+    // 2. Dynamically build the list of templates to load from config
     const templatePaths = new Set(config.templates || []);
-    for (const path in config.routes) {
-        const route = config.routes[path];
-        if (route.layout) templatePaths.add(route.layout);
-        if (route.page) templatePaths.add(route.page);
+    function collectTemplates(routes) {
+        for (const path in routes) {
+            const route = routes[path];
+            if (route.layout) templatePaths.add(route.layout);
+            if (route.page) templatePaths.add(route.page);
+            if (route.children) collectTemplates(route.children);
+        }
     }
+    collectTemplates(config.routes);
     await preloadTemplates(Array.from(templatePaths));
 
-    // Set up router from config
-    for (const path in config.routes) {
-        const route = config.routes[path];
-        router.on(path, () => {
-            document.title = route.title;
-            const layoutTemplate = templates[route.layout];
-
-            if (layoutTemplate) {
-                // The layout template is responsible for everything.
-                // We pass it the route-specific data, and all global templates/config as helpers.
-                const finalHtml = layoutTemplate.render(route.data, {
-                    templates: templates,
-                    config: config,
-                    currentPage: route.page // Tell the layout which page to render
-                });
-                app.innerHTML = finalHtml;
-            } else {
-                 app.innerHTML = `<p class="text-center text-danger">Error: Layout template for ${route.layout} not found.</p>`;
+    // 3. Recursive Router Setup
+    function registerRoutes(routes) {
+        for (const path in routes) {
+            const route = routes[path];
+            router.on(route.fullPath, () => {
+                document.title = route.title;
+                const layoutTemplate = templates[route.layout];
+                if (layoutTemplate) {
+                    const finalHtml = layoutTemplate.render(route.data, {
+                        templates: templates,
+                        config: config,
+                        currentPage: route.page,
+                        currentRoute: route // Pass current route for context
+                    });
+                    app.innerHTML = finalHtml;
+                } else {
+                    app.innerHTML = `<p class="text-center text-danger">Layout template for ${route.fullPath} not found.</p>`;
+                }
+            });
+            if (route.children) {
+                registerRoutes(route.children);
             }
-        });
+        }
     }
+    registerRoutes(config.routes);
 
     router.notFound(() => {
         document.title = '404 Not Found';

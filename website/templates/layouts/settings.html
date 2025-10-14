@@ -1,0 +1,9 @@
+<div class="d-flex" style="min-height: 100vh;">
+    <!-- Include the Sidebar Component -->
+    {{include tmpl=~templates['components/sidebar'] /}}
+
+    <!-- Page Content -->
+    <div class="flex-grow-1 p-4">
+        {{include tmpl=~templates[~currentPage] /}}
+    </div>
+</div>
