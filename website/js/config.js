@@ -17,12 +17,23 @@ const featureData = [
 ];
 
 const config = {
+    // Global templates that are not pages or layouts themselves
+    templates: ['feature'],
+
     routes: {
         '/': {
             title: 'EVMPack - Home',
             layout: 'layouts/main',
             page: 'pages/home',
-            data: { features: featureData }
+            data: { features: featureData },
+            menuTitle: 'Home'
+        },
+        '/about': {
+            title: 'About EVMPack',
+            layout: 'layouts/sidebar',
+            page: 'pages/about',
+            data: {},
+            menuTitle: 'About'
         }
     }
 };

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "!{/css/**,/js/**,/templates/**,*.ico}",
+      "destination": "/index.html"
+    }
+  ]
+}

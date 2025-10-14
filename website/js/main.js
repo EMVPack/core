@@ -7,7 +7,7 @@ const templates = {}; // Cache for compiled templates
 async function preloadTemplates(paths) {
     for (const path of paths) {
         try {
-            const response = await fetch(`templates/${path}.html`);
+            const response = await fetch(`/templates/${path}.html`);
             const templateString = await response.text();
             templates[path] = $.templates(templateString);
         } catch (error) {
@@ -28,33 +28,33 @@ window.copyCode = function() {
 
 // --- Main execution block ---
 document.addEventListener("DOMContentLoaded", async () => {
-    // Preload all templates we need
-    await preloadTemplates(['layouts/main', 'pages/home', 'feature']);
+    // Dynamically build the list of templates to load from config
+    const templatePaths = new Set(config.templates || []);
+    for (const path in config.routes) {
+        const route = config.routes[path];
+        if (route.layout) templatePaths.add(route.layout);
+        if (route.page) templatePaths.add(route.page);
+    }
+    await preloadTemplates(Array.from(templatePaths));
 
     // Set up router from config
     for (const path in config.routes) {
         const route = config.routes[path];
         router.on(path, () => {
             document.title = route.title;
-
             const layoutTemplate = templates[route.layout];
-            const pageTemplate = templates[route.page];
 
-            if (layoutTemplate && pageTemplate) {
-                // 1. Render the main layout and put it in the app
-                const layoutHtml = layoutTemplate.render();
-                app.innerHTML = layoutHtml;
-
-                // 2. Find the content placeholder inside the newly rendered layout
-                const pageContentContainer = document.getElementById('page-content');
-
-                // 3. Render the page template and put it in the placeholder
-                if (pageContentContainer) {
-                    const pageHtml = pageTemplate.render(route.data, { templates: templates });
-                    pageContentContainer.innerHTML = pageHtml;
-                }
+            if (layoutTemplate) {
+                // The layout template is responsible for everything.
+                // We pass it the route-specific data, and all global templates/config as helpers.
+                const finalHtml = layoutTemplate.render(route.data, {
+                    templates: templates,
+                    config: config,
+                    currentPage: route.page // Tell the layout which page to render
+                });
+                app.innerHTML = finalHtml;
             } else {
-                 app.innerHTML = `<p class="text-center text-danger">Error: Template for ${path} not found.</p>`;
+                 app.innerHTML = `<p class="text-center text-danger">Error: Layout template for ${route.layout} not found.</p>`;
             }
         });
     }
