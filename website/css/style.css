@@ -1,0 +1,35 @@
+        body {
+            background-color: #f8f9fa;
+        }
+        .hero {
+            background-color: #343a40;
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #0d6efd;
+        }
+        .code-snippet {
+            background-color: #212529;
+            color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            position: relative;
+        }
+        .code-snippet pre {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .copy-btn:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
