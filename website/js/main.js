@@ -9,7 +9,7 @@ function copyCode() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
     const features = [
         {
             icon: '&#128230;',
@@ -28,7 +28,29 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     ];
 
-    const template = $.templates("#featureTemplate");
-    const htmlOutput = template.render(features);
-    document.getElementById("featuresContainer").innerHTML = htmlOutput;
+    try {
+        // 1. Fetch the main layout
+        const layoutResponse = await fetch('templates/layouts/main.html');
+        const layoutHtml = await layoutResponse.text();
+
+        // 2. Render the main layout into the #app div
+        document.getElementById("app").innerHTML = layoutHtml;
+
+        // 3. Fetch the feature template
+        const featureTmplResponse = await fetch('templates/feature.html');
+        const featureTmplString = await featureTmplResponse.text();
+
+        // 4. Compile the feature template
+        const template = $.templates(featureTmplString);
+
+        // 5. Render the features
+        const htmlOutput = template.render(features);
+
+        // 6. Insert the rendered features into the container
+        document.getElementById("featuresContainer").innerHTML = htmlOutput;
+
+    } catch (error) {
+        console.error('Failed to load templates:', error);
+        document.getElementById("app").innerHTML = '<p class="text-center text-danger">Error loading page content.</p>';
+    }
 });
