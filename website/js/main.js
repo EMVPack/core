@@ -16,41 +16,7 @@ async function preloadTemplates(paths) {
     }
 }
 
-// --- Page-specific rendering logic ---
-function renderFeatures() {
-    const featureData = [
-        {
-            icon: '&#128230;',
-            title: 'On-chain Package Manager',
-            description: 'Manage your smart contract packages directly on the blockchain.'
-        },
-        {
-            icon: '&#128273;',
-            title: 'Secure and Reliable',
-            description: 'Ensures integrity and provenance of smart contract packages.'
-        },
-        {
-            icon: '&#128279;',
-            title: 'Seamless Integration',
-            description: 'Works with your existing developer tools like Hardhat and Foundry.'
-        }
-    ];
-    if (templates['feature'] && document.getElementById('featuresContainer')) {
-        const featuresHtml = templates['feature'].render(featureData);
-        document.getElementById('featuresContainer').innerHTML = featuresHtml;
-    }
-}
-
-// --- Routes Configuration ---
-const routes = {
-    '/': {
-        title: 'EVMPack - Home',
-        template: 'layouts/main',
-        onAfterRender: renderFeatures
-    }
-};
-
-// --- Global functions (must be on window object to be called from HTML) ---
+// --- Global functions ---
 window.copyCode = function() {
     const code = document.querySelector('.code-snippet pre code').innerText;
     navigator.clipboard.writeText(code).then(() => {
@@ -62,21 +28,33 @@ window.copyCode = function() {
 
 // --- Main execution block ---
 document.addEventListener("DOMContentLoaded", async () => {
-    await preloadTemplates(['layouts/main', 'feature']);
+    // Preload all templates we need
+    await preloadTemplates(['layouts/main', 'pages/home', 'feature']);
 
-    // Set up router
-    for (const path in routes) {
-        const route = routes[path];
+    // Set up router from config
+    for (const path in config.routes) {
+        const route = config.routes[path];
         router.on(path, () => {
             document.title = route.title;
-            if (templates[route.template]) {
-                const layoutHtml = templates[route.template].render();
+
+            const layoutTemplate = templates[route.layout];
+            const pageTemplate = templates[route.page];
+
+            if (layoutTemplate && pageTemplate) {
+                // 1. Render the main layout and put it in the app
+                const layoutHtml = layoutTemplate.render();
                 app.innerHTML = layoutHtml;
-                if (route.onAfterRender) {
-                    route.onAfterRender();
+
+                // 2. Find the content placeholder inside the newly rendered layout
+                const pageContentContainer = document.getElementById('page-content');
+
+                // 3. Render the page template and put it in the placeholder
+                if (pageContentContainer) {
+                    const pageHtml = pageTemplate.render(route.data, { templates: templates });
+                    pageContentContainer.innerHTML = pageHtml;
                 }
             } else {
-                 app.innerHTML = `<p class="text-center text-danger">Error: Layout template for ${path} not found.</p>`;
+                 app.innerHTML = `<p class="text-center text-danger">Error: Template for ${path} not found.</p>`;
             }
         });
     }

@@ -1,0 +1,15 @@
+<!-- Features Section -->
+<div class="container py-5">
+    <div class="row text-center">
+        {{for features tmpl=~templates.feature /}}
+    </div>
+</div>
+
+<!-- Code Snippet Section -->
+<div class="container mb-5">
+    <div class="code-snippet">
+        <button class="btn btn-sm btn-light copy-btn" onclick="copyCode()">Copy</button>
+        <pre><code>$ npx evmpack install open-zeppelin/contracts@5.0.0
+$ npx evmpack link @openzeppelin/contracts-upgradeable</code></pre>
+    </div>
+</div>
