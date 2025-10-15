@@ -12,7 +12,6 @@ const { execSync } = require('child_process');
 const { implTypes } = require("./init");
 const { accountSelection } = require("./ui");
 
-
 const { createSymlink } = require("./utils");
 
 async function prepareRelease(deployer, external_implementation_address, evmpackConfig, releaseConfig){
@@ -87,8 +86,19 @@ async function prepareRelease(deployer, external_implementation_address, evmpack
 
     if (evmpackConfig.type === 'implementation') {
         
+        let root = './';
+    
+        if(fs.existsSync('foundry.lock')){
+            root = "./src"
+        }
+    
+        if(fs.existsSync('hardhat.config.js') || fs.existsSync('hardhat.config.ts') ){
+            root = "./contracts"
+        }
+
+
         let implementationAddress;
-        const artifactPath = path.join(process.cwd(), 'artifacts', releaseConfig.main_contract + '.sol', releaseConfig.main_contract + '.json');
+        const artifactPath = path.join(process.cwd(), root , 'artifacts', releaseConfig.main_contract + '.sol', releaseConfig.main_contract + '.json');
         const artifact = JSON.parse(fs.readFileSync(artifactPath, 'utf8'));
         abiCid = await uploadFile(Buffer.from(JSON.stringify(artifact.abi)));
         sourceCid = await uploadFile(findFile(process.cwd(),releaseConfig.main_contract+".sol"));
@@ -116,7 +126,7 @@ async function prepareRelease(deployer, external_implementation_address, evmpack
             const deployedImplementation = await factory.deploy()
             const implementation  = await deployedImplementation.waitForDeployment()
             implementationAddress = implementation.target;
-            console.log(`🔗 Implementation deployed: ${implementationAddress}`)
+            
         }
 
         implementation = {
@@ -125,6 +135,7 @@ async function prepareRelease(deployer, external_implementation_address, evmpack
             selector: releaseConfig.selector
         };
 
+        console.log(`🔗 Implementation deployed: ${implementationAddress}`)
     }
 
 
@@ -154,26 +165,28 @@ async function addRelease(external_implementation_address = false) {
     
     const evmPack = await getEVMPack(deployer);
 
+    
     try {
         
         const packageConfig = loadConfig('evmpack.json');
+        
         const releaseConfig = loadConfig('release.json');
-
+        
+        execSync('rm -f @evmpack')
         const errors = validateConfig(packageConfig, releaseConfig);
 
         if (errors.length > 0) {
             throw new Error(`Configuration errors: \n - ${errors.join('\n - ')}`);
         }
 
-  
-        const release = await prepareRelease(deployer,external_implementation_address, packageConfig, releaseConfig)
-        
+        const release = await prepareRelease(deployer,external_implementation_address, packageConfig, releaseConfig)        
 
         let tx;
 
         if(release.implementation){
-            tx = await evmPack.addRelease(
-                packageConfig.name, 
+            console.log("add implementation ver")
+            tx = await evmPack['addRelease(string,(string,string),(uint8,address,string))'](
+                packageConfig.name,
                 {
                     version: release.version,
                     manifest: release.manifest
@@ -181,8 +194,9 @@ async function addRelease(external_implementation_address = false) {
                 release.implementation
             );
         }else{
-            tx = await evmPack.addRelease(
-                packageConfig.name, 
+            console.log("add library ver")
+            tx = await evmPack['addRelease(string,(string,string))'](
+                packageConfig.name,
                 {
                     version: release.version,
                     manifest: release.manifest

@@ -51,6 +51,15 @@ async function compile() {
     }
 
     const compilerSettings = releaseConfig.compiler;
+    let root = './';
+
+    if(fs.existsSync('foundry.lock')){
+        root = "./src"
+    }
+
+    if(fs.existsSync('hardhat.config.js') || fs.existsSync('hardhat.config.ts') ){
+        root = "./contracts"
+    }
 
     const command = [
         'forge build',
@@ -62,8 +71,7 @@ async function compile() {
         `--use ${compilerSettings.solc_version}`,
         `-C ${compilerSettings.context_dir}`,
         `-o ${compilerSettings.output_dir}`,
-        `--root ./`,
-        `--skip node_modules/*`,
+        `--root ${root}`,
         `-q`,
         `--remappings  @evmpack=${os.homedir()}/.evmpack/packages`
     ].join(' ');
