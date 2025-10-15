@@ -4,6 +4,21 @@ const app = document.getElementById('app');
 const templates = {}; // Cache for compiled templates
 const converter = new showdown.Converter({tables:true, tablesHeaderId: true});
 
+router.hooks({
+  before(done, match) {
+    const delayTime = (window.location.host === "localhost:3000" && config.emulateLocalLoading) ? 1500 : 0; // 1.5 seconds delay if emulateDelay is true
+
+    if(delayTime && document.getElementById("preloader"))
+        setTimeout(() => {
+              done();
+        }, delayTime);
+    else
+         done();
+    
+  
+  }
+});
+
 // --- Preload and Process Config ---
 async function preloadTemplates(paths) {
     for (const path of paths) {
@@ -45,18 +60,9 @@ function processRoutes(routes, parentPath = '') {
     }
 }
 
-// --- Global functions ---
-window.copyCode = function() {
-    const code = document.querySelector('.code-snippet pre code').innerText;
-    navigator.clipboard.writeText(code).then(() => {
-        alert('Code copied to clipboard!');
-    }, (err) => {
-        alert('Failed to copy code.');
-    });
-}
-
 // --- Main execution block ---
 document.addEventListener("DOMContentLoaded", async () => {
+
     // 1. Process routes to add fullPath property
     processRoutes(config.routes);
 
@@ -89,6 +95,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         currentPage: route.page,
                         currentRoute: route // Pass current route for context
                     });
+
                     app.innerHTML = finalHtml;
                 } else {
                     app.innerHTML = `<p class="text-center text-danger">Layout template for ${route.fullPath} not found.</p>`;
@@ -99,6 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         }
     }
+
     registerRoutes(config.routes);
 
     router.notFound(() => {

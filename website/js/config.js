@@ -17,8 +17,8 @@ const featureData = [
 ];
 
 const config = {
+    emulateLocalLoading: true,
     templates: ['components/feature', 'components/menu', 'components/menu-item', 'components/sidebar', 'components/hero'],
-
     routes: {
         '/': {
             title: 'EVMPack - Home',
