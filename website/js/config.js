@@ -58,7 +58,13 @@ const config = {
                     layout: 'layouts/sidebar', 
                     page: 'pages/documentation/install_dependencies.md',
                     menuTitle: 'Install dependencies'
-                }
+                },
+                '/write_implementation': {
+                    title: 'Write implementation contract ',
+                    layout: 'layouts/sidebar', 
+                    page: 'pages/documentation/write_implementation.md',
+                    menuTitle: 'Write implementation'
+                }                
             }
         }
     }

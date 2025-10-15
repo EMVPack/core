@@ -57,18 +57,18 @@ body {
     color: #0d6efd;
 }
 pre {
-    background-color: black;
+    background-color: var(--bs-dark) !important;
     color: #f8f9fa;
     padding: 1.5rem;
     border-radius: 0.5rem;
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 30px !important;
     font-size: 0.9rem;
 
 }
 
 .page-content h1, .page-content h2, .page-content h3, .page-content h4, .page-content p, .page-content ul, .page-content ol {margin-bottom: 30px;}
-.page-content pre {max-width: 900px}
+.page-content pre {max-width: 1000px}
 .page-content table {margin-bottom: 30px;}
 .page-content td, .page-content th {padding: 10px; border: #5a6268 1px solid;}
 

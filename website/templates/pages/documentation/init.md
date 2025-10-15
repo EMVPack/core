@@ -21,7 +21,7 @@ evmpack.json and release.json created successfully!
 
 ```
 
-EVMPack create for you 2 files: 
+EVMPack create for you 3 files: 
 
 ```bash
     $ cat evmpack.json
@@ -48,10 +48,20 @@ EVMPack create for you 2 files:
         "main_contract": "Blog",
         "selector": ""
     }
+
+    $ cat Blog.sol
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.28;
+
+    contract Template {
+    
+    }
 ```
+
+And symlink @evmpack -> **$HOME/.evmpack/packages**
 
 Everything here is standard for a package manager, except:
 
-- evmpack.json:type - We've chosen the implementation package type, which means we'll not only download the source code, but also deploy the implementation so it can be used in other packages.
-- release.json:selector - This parameter is important for the implementation package type, because we need to explicitly specify which method to call and with what parameters when initializing the implementation. If you don't understand, then don't bother your head, you'll understand later.
+- **evmpack.json:type** - We've chosen the implementation package type, which means we'll not only download the source code, but also deploy the implementation so it can be used in other packages.
+- **release.json:selector** - This parameter is important for the implementation package type, because we need to explicitly specify which method to call and with what parameters when initializing the implementation. If you don't understand, then don't bother your head, you'll understand later.
 

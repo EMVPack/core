@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
 
                     app.innerHTML = finalHtml;
+                    Prism.highlightAll();
                 } else {
                     app.innerHTML = `<p class="text-center text-danger">Layout template for ${route.fullPath} not found.</p>`;
                 }

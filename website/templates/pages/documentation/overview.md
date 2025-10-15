@@ -19,7 +19,17 @@ IPFS storage endpoint : https://storage.evmpack.tech
 
 ```
 
-# 🛠️ Usage & Commands
+Now you should add your private key for sign all of transactions 
+
+```bash
+$ evmpack auth
+? Enter your Ethereum private key: 0x...
+? Etner your password: 
+```
+
+After that your private key will be stored in ~/.evmpack/auth_key
+
+## 🛠️ Usage & Commands
 
 EVMPack is a powerful tool with a lot of features. Here's a quick rundown of what you can do:
 

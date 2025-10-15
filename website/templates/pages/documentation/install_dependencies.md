@@ -2,7 +2,7 @@
 
 First what you need for create implementation package, its contracts-upgrade@openzeppelin package:
 
-```
+```bash
 $ evmpack install contracts-upgrade@openzeppelin
 
 Resolving package contracts-upgrade@openzeppelin@latest...
@@ -16,7 +16,7 @@ Already installed: contracts-upgrade@openzeppelin@5.4.0
 
 Now lets check release.json:
 
-```
+```bash
 $ cat release.json
 
 {
@@ -32,7 +32,7 @@ In dependencies block we are see our installed package **contracts-upgrade@openz
 
 And we have one new file:
 
-```
+```bash
 $ cat evmpack-lock.json
 
 {
@@ -61,7 +61,7 @@ You may notice that two packages were actually downloaded. This is because the p
 
 You can also see the IPFS hash of the tarball itself in resolved.
 
-All packages located in $HOME/.evmpack/packages
+All packages located in **$HOME/.evmpack/packages**
 
 Great, we've installed the packages and can now create our first contract.
 
