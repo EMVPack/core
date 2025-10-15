@@ -21,6 +21,7 @@ const { info, listPackages } = require("./lib/info");
 const { initFromNPM } = require("./lib/init-from-npm");
 const { link } = require("./lib/link");
 const { use } = require("./lib/use");
+const { generateUiSchema } = require("./lib/generate-ui-schema");
 const { createHiddenDirInHome } = require("./lib/utils");
 const { execSync } = require('child_process');
 const fs = require('fs');
@@ -86,6 +87,7 @@ yargs(hideBin(process.argv))
             type: 'string'
         })
     }, (argv) => use(argv.package))
+    .command('generate-ui-schema', 'Generate a UI schema from the main contract specified in release.json', () => {}, generateUiSchema)
     .demandCommand(1, 'You need at least one command before moving on')
     .help()
     .argv;
