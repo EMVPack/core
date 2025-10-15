@@ -64,7 +64,19 @@ const config = {
                     layout: 'layouts/sidebar', 
                     page: 'pages/documentation/write_implementation.md',
                     menuTitle: 'Write implementation'
-                }                
+                },
+                '/register_implementation': {
+                    title: 'Register implementation contract',
+                    layout: 'layouts/sidebar', 
+                    page: 'pages/documentation/register_implementation.md',
+                    menuTitle: 'Register implementation'
+                },
+                '/add_release': {
+                    title: 'Add release implementation contract',
+                    layout: 'layouts/sidebar', 
+                    page: 'pages/documentation/add_release.md',
+                    menuTitle: 'Add new release'
+                }                                
             }
         }
     }
