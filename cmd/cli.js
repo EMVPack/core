@@ -26,6 +26,7 @@ const fs = require('fs');
 
 createHiddenDirInHome(process.env.EVM_PACK_DIR+"/packages")
 
+
 yargs(hideBin(process.argv))
     .scriptName('evmpack')
     .command('generate-release-note', "Use gemini for generate release_note.md", () => {}, async function(){
@@ -81,3 +82,4 @@ yargs(hideBin(process.argv))
     .demandCommand(1, 'You need at least one command before moving on')
     .help()
     .argv;
+

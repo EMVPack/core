@@ -118,8 +118,16 @@ async function init() {
       type: 'input',
       name: 'selector',
       message: 'Selector:',
+      choices: packageTypes,
       when: (answers) => answers.type === 'implementation'
     },
+    {
+      type: 'list',
+      name: 'implementationType',
+      message: 'Implementation type:',
+      choices:implTypes,
+      when: (answers) => answers.type === 'implementation'
+    },    
     {
       type: 'input',
       name: 'license',
@@ -169,6 +177,7 @@ async function init() {
   if (answers.type == "implementation") {
     releaseConfig.main_contract = answers.main_contract;
     releaseConfig.selector = answers.selector;
+    releaseConfig.implementationType = answers.implementationType;
   }
 
   fs.writeFileSync(

@@ -12,10 +12,14 @@ const { execSync } = require('child_process');
 const { implTypes } = require("./init");
 const { accountSelection } = require("./ui");
 
+
+const { createSymlink } = require("./utils");
+
 async function prepareRelease(deployer, external_implementation_address, evmpackConfig, releaseConfig){
     
     console.log('Compiling contracts...');
     await compile();
+    execSync('rm -f @evmpack')
 
     let release_note;
     let release_note_path = process.cwd() + "/release_note.md";
@@ -70,8 +74,9 @@ async function prepareRelease(deployer, external_implementation_address, evmpack
     }
 
     fs.writeFileSync(release_note_path, release_note);
-
+    
     const releaseNoteCid = await uploadFile(process.cwd() + "/release_note.md");
+
     const tarballPath = await createTarball(evmpackConfig.name, releaseConfig.version);
     const tarballCid = await uploadFile(tarballPath);
 
@@ -93,15 +98,25 @@ async function prepareRelease(deployer, external_implementation_address, evmpack
                 {
                     type: 'input',
                     name: 'implementationAddress',
-                    message: 'Enter the address of the deployed implementation contract:',
+                    message: 'Enter the address of the deployed implementation contract (empty for deploy now):',
                 }
             ]);
+
             implementationAddress = answers.implementationAddress;
+
+            if(!implementationAddress){
+                const factory = new ethers.ContractFactory(artifact.abi, artifact.bytecode, deployer);
+                const deployedImplementation = await factory.deploy()
+                const implementation  = await deployedImplementation.waitForDeployment()
+                implementationAddress = implementation.target;
+            }
+
         }else{
             const factory = new ethers.ContractFactory(artifact.abi, artifact.bytecode, deployer);
             const deployedImplementation = await factory.deploy()
             const implementation  = await deployedImplementation.waitForDeployment()
             implementationAddress = implementation.target;
+            console.log(`🔗 Implementation deployed: ${implementationAddress}`)
         }
 
         implementation = {
@@ -124,6 +139,7 @@ async function prepareRelease(deployer, external_implementation_address, evmpack
     
 
     const manifestCid = await uploadFile(Buffer.from(JSON.stringify(manifest)))
+    await createSymlink(process.env.EVM_PACK_DIR+'/packages', './@evmpack');
 
     return {
         version: releaseConfig.version,
