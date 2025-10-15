@@ -1,6 +1,6 @@
 # Add new release
 
-Last time, we created a Blog package with an implementation type, but we completely forgot about tests. This package is clearly lacking functionality; the contract is meaningless from a real-world perspective. 
+Last time, we created a Blog package with an implementation type, but we completely forgot about tests. This package is clearly lacking functionality, the contract is meaningless from a real-world perspective. 
 
 Let's add new methods: 
 - addPostWithTags(), 
@@ -173,7 +173,14 @@ contract Blog is Initializable, OwnableUpgradeable {
 Now we write tests, for test we will use forge:
 
 ```bash
-$ forge install foundry-rs/forge-std && mkdir test
+$ forge install foundry-rs/forge-std && mkdir test 
+```
+
+
+Since we initialized forge, we need to move our contract to the src folder.
+
+```bash
+mkdir src && mv Blog.sol src/
 ```
 
 And this ready tests file test/Blog.t.sol:
@@ -183,7 +190,7 @@ And this ready tests file test/Blog.t.sol:
 pragma solidity ^0.8.28;
 
 import "forge-std/Test.sol";
-import "../Blog.sol";
+import "../src/Blog.sol";
 
 contract BlogTest is Test, Blog {
     Blog blog;
@@ -373,7 +380,40 @@ Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 3.44ms (5.63ms CPU
 Ran 1 test suite in 10.92ms (3.44ms CPU time): 12 tests passed, 0 failed, 0 skipped (12 total tests)
 ```
 
-Ready! Now we a ready prepare new release
+Ready! Now we a ready prepare new release, just change version in release.json up to 1.1.0 and run:
 
+```bash
+$ evmpack release
+✔ Enter your password to decrypt your private key:
+Compiling contracts...
+Executing: forge build --via-ir --evm-version prague --optimize --optimizer-runs 200 --no-metadata --use 0.8.28 -C ./ -o ./artifacts --root ./src -q --remappings  @evmpack=/home/darkrain/.evmpack/packages
+Compilation finished successfully.
+✔ Edit your release note:
+✔ Enter the address of the deployed implementation contract (empty for deploy now): 
+🔗 Implementation deployed: 0x9953d86c77251558A03981d2740C807F3db6A1C5
+add implementation ver
+Successfully added release 1.1.0 for package blog
+Transaction hash: 0xfe2adb70f3c28c6071c91ebf0077fbde8459402899473d9cda74f0968ca59413
+```
 
+Then you can check package info:
 
+```bash
+
+$ evmpack info blog
+Package: blog
+Title: Blog for your app
+Description: Contract for manage blog posts
+Author: Vitalik
+License: MIT
+Type: implementation
+
+Maintainers:
+  Address: 0x5505957ff5927F29eAcaBbBE8A304968BF2dc064
+
+Releases:
+  Version: 1.0.0
+  Version: 1.1.0
+
+```
+Nice!
