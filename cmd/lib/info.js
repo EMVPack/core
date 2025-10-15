@@ -28,7 +28,9 @@ async function info(name) {
         console.log("\nReleases:");
 
         for (const version of versions) {
+            const releaseInfo = await evmpack.getPackageRelease(name, version)
             console.log(`  Version: ${version}`);
+            console.log(`  Implementation target: ${releaseInfo[1].target}`, )
         }
 
     } catch (error) {

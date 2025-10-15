@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 
 process.env.EVM_PACK_ADDRESS = process.env.EVM_PACK_ADDRESS || "0x4fCD571Dbc9C7f8b235182B704665Ffd9dAC6289"; // op-sepolia
-process.env.EVM_PACK_PROXY_FACTORY_ADDRESS = process.env.EVM_PACK_PROXY_FACTORY_ADDRESS || "0x4f6a8b02E9bB71669AFBb415532c450F980C8f7F"
+process.env.EVM_PACK_PROXY_FACTORY_ADDRESS = process.env.EVM_PACK_PROXY_FACTORY_ADDRESS || "0xdeE8FC58CB8534BE2a5fc64e9832B35d2ba2C68A"
 process.env.EVM_PACK_NETWORK = process.env.EVM_PACK_NETWORK || process.env.EVM_PACK_NETWORK || "https://sepolia.optimism.io"
 process.env.STORAGE_API_KEY = process.env.STORAGE_API_KEY || "20C291cBB2eF8D6D6c344fd59c1D0B458a083a6A";
 process.env.STORAGE_ENDPOINT = process.env.STORAGE_ENDPOINT || "https://storage.evmpack.tech"
 process.env.EVM_PACK_DIR = process.env.EVM_PACK_DIR || require('os').homedir()+"/.evmpack";
 process.env.EVM_PACK_DEV = process.env.EVM_PACK_DEV || true;
+
+
+console.log("process.env.EVM_PACK_PROXY_FACTORY_ADDRESS", process.env.EVM_PACK_PROXY_FACTORY_ADDRESS)
 
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
@@ -20,6 +23,7 @@ const { addRelease } = require("./lib/release");
 const { info, listPackages } = require("./lib/info");
 const { initFromNPM } = require("./lib/init-from-npm");
 const { link } = require("./lib/link");
+const { use } = require("./lib/use");
 const { createHiddenDirInHome } = require("./lib/utils");
 const { execSync } = require('child_process');
 const fs = require('fs');
@@ -79,6 +83,12 @@ yargs(hideBin(process.argv))
             type: 'string'
         })
     }, (argv) => initFromNPM(argv.package))
+    .command('use [package]', 'Use a package to create a proxy', (yargs) => {
+        yargs.positional('package', {
+            describe: 'Package to use (e.g., my-package@1.0.0)',
+            type: 'string'
+        })
+    }, (argv) => use(argv.package))
     .demandCommand(1, 'You need at least one command before moving on')
     .help()
     .argv;
