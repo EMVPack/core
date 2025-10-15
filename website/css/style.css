@@ -2,14 +2,14 @@ body {
     background-color: var(--app-main-color);
 }
 .hero {
-    background-color: var(--app-main-color);
-    color: black;
+    background-color: var(--bs-dark);
+    color: white;
     padding: 4rem 2rem;
     text-align: center;
     
 
     .logo {
-        background-image: var(--logo);
+        background-image: var(--logo-dark);
         background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
@@ -36,6 +36,20 @@ body {
 
 .sidebar a.nav-link {
     color: white;
+}
+
+.sidebar a.nav-link.active {
+    background-color: #a50c0c;
+}
+
+.btn-primary-evmpack {
+    background-color: #a50c0c;
+    border-color: #cb6060;
+}
+
+.btn-primary-evmpack:hover {
+    background-color: #af2828;
+    border-color: #cb6060;
 }
 
 .feature-icon {
