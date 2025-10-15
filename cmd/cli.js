@@ -8,9 +8,6 @@ process.env.STORAGE_ENDPOINT = process.env.STORAGE_ENDPOINT || "https://storage.
 process.env.EVM_PACK_DIR = process.env.EVM_PACK_DIR || require('os').homedir()+"/.evmpack";
 process.env.EVM_PACK_DEV = process.env.EVM_PACK_DEV || true;
 
-
-console.log("process.env.EVM_PACK_PROXY_FACTORY_ADDRESS", process.env.EVM_PACK_PROXY_FACTORY_ADDRESS)
-
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { init } = require("./lib/init");

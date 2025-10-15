@@ -30,18 +30,12 @@ async function use(packageNameAndVersion) {
             return;
         }
 
-        const answers = await inquirer.default.prompt([
+        const genericAnswers = await inquirer.default.prompt([
             {
                 type: 'input',
                 name: 'proxyAdmin',
                 message: 'Enter EVMPack ProxyAdmin address (optional):',
                 default: '',
-            },
-            {
-                type: 'input',
-                name: 'initData',
-                message: `Enter initialization data with comma separator ${release[1].selector}:`,
-                default: '0x',
             },
             {
                 type: 'input',
@@ -51,23 +45,53 @@ async function use(packageNameAndVersion) {
             },
         ]);
 
-        
         let owner = deployer.address;
-
-        if(answers.proxyAdmin){
-            owner = answers.proxyAdmin;
+        if (genericAnswers.proxyAdmin) {
+            owner = genericAnswers.proxyAdmin;
         }
 
+        let initData = '0x';
+        // Check if an initializer function exists
+        if (release[1].selector && release[1].selector.includes('(')) {
+            const contractInterface = new ethers.Interface([`function ${release[1].selector}`]);
+            const functionFragment = contractInterface.getFunction(release[1].selector.split('(')[0]);
+
+            if (functionFragment.inputs.length > 0) {
+                const argQuestions = functionFragment.inputs.map(param => ({
+                    type: 'input',
+                    name: param.name,
+                    message: `Enter value for '${param.name}' (type: ${param.type}):`
+                }));
+
+                console.log(`Please provide arguments for the initializer function: ${release[1].selector}`);
+                const argAnswers = await inquirer.default.prompt(argQuestions);
+                
+                const orderedArgs = functionFragment.inputs.map(param => argAnswers[param.name]);
+                initData = contractInterface.encodeFunctionData(functionFragment, orderedArgs);
+            }
+        }
         
-        const contractInterface = new ethers.Interface([
-            `function ${release[1].selector}`
-        ]);
-
-        const initData = contractInterface.encodeFunctionData(release[1].selector.split("(")[0], answers.initData.split(","));
-
-        const tx = await factory.usePackageRelease(packageName, version, owner, initData, answers.salt);
+        const tx = await factory.usePackageRelease(packageName, version, owner, initData, genericAnswers.salt);
         const receipt = await tx.wait();
-        const proxyCreated = receipt.events.find(e => e.event === 'ProxyCreated').args;
+
+        // Find and parse the correct log manually for ethers v6
+        let proxyCreated = null;
+        for (const log of receipt.logs) {
+            try {
+                const parsedLog = factory.interface.parseLog(log);
+                if (parsedLog && parsedLog.name === 'ProxyCreated') {
+                    proxyCreated = parsedLog.args;
+                    break; // Found it, exit loop
+                }
+            } catch (error) {
+                // Ignore logs that don't match our interface
+            }
+        }
+
+        if (!proxyCreated) {
+            console.error("Error: Could not find 'ProxyCreated' event in the transaction receipt.");
+            return;
+        }
 
         console.log(`Proxy for ${packageName}@${version} deployed at: ${proxyCreated.proxy} with admin ${proxyCreated.proxy_admin} `);
 

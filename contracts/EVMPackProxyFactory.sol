@@ -10,15 +10,16 @@ import "./EVMPackProxyAdmin.sol";
 interface IEVMPackProxyFactory{
     event ProxyCreated(address indexed proxy, address indexed proxy_admin);
     event ProxyAdminCreated(address indexed proxy);
+
+    error IncorrectImplementation();
+    error IncorrectOwner();
+
     function usePackageRelease(string calldata name, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address);
 }
 
 contract EVMPackProxyFactory is IEVMPackProxyFactory {
 
     IEVMPack _evmpack;
-
-    error IncorrectImplementation();
-    error IncorrectOwner();
 
     constructor(address evmpack){
         _evmpack = IEVMPack(evmpack);
