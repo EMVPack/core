@@ -1,18 +1,18 @@
 const featureData = [
     {
-        icon: '&#128230;',
-        title: 'On-chain Package Manager',
-        description: 'Manage your smart contract packages directly on the blockchain.'
+        icon: '&#128187;',
+        title: 'Powerful CLI for dApp Assembly',
+        description: 'Interact with the smart contract backend of your dApps efficiently. The EVMPack CLI offers commands like `evmpack init` for project setup, `evmpack register` for implementation registration, and `evmpack use` for assembling and updating your dApp\'s core from available packages, streamlining complex operations.'
     },
     {
         icon: '&#128273;',
         title: 'Reuseble',
-        description: 'Use already deployed contracts implementations like ERC20.'
+        description: 'Define, manage, and share your smart contract packages, whether they are libraries or implementations. EVMPack allows you to install, link, and manage versions of these packages, ensuring consistent and reproducible builds for the foundational layer of your decentralized applications.'
     },
     {
-        icon: '&#128279;',
-        title: 'Seamless Integration',
-        description: 'Works with your existing developer tools like Hardhat and Foundry.'
+        icon: '&#128230;',
+        title: 'Version Control and Release Management',
+        description: 'Maintain stability and clarity for your dApp\'s smart contract packages. EVMPack integrates semantic versioning SemVer and facilitates easy management of package releases using `evmpack release`, ensuring clear version tracking and compatibility across your dApp ecosystem.'
     }
 ];
 
