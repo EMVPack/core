@@ -34,6 +34,8 @@ async function compile() {
         fs.writeFileSync('release.json', JSON.stringify(releaseConfig, null, 2));
     }
 
+  
+
     if (!releaseConfig.compiler) {
         releaseConfig.compiler = {
             via_ir: true,
@@ -45,21 +47,30 @@ async function compile() {
             no_metadata: true,
             solc_version: "0.8.28",
             output_dir: "./artifacts",
-            context_dir: "./"
+            cache_dir: "./cache",
+            context_dir: "./",
+            root:  "./"
         };
+
+        if(fs.existsSync('foundry.lock')){
+            releaseConfig.compiler.root = "./src"
+            releaseConfig.compiler.output_dir = "../artifacts"
+            releaseConfig.compiler.cache_dir = "../cache"
+        }
+
+        if(fs.existsSync('hardhat.config.js') || fs.existsSync('hardhat.config.ts') ){
+            releaseConfig.compiler.root = "./contracts"
+            releaseConfig.compiler.output_dir = "../artifacts"
+            releaseConfig.compiler.cache_dir = "../cache"        
+        }
+
         fs.writeFileSync('release.json', JSON.stringify(releaseConfig, null, 2));
     }
 
     const compilerSettings = releaseConfig.compiler;
-    let root = './';
 
-    if(fs.existsSync('foundry.lock')){
-        root = "./src"
-    }
 
-    if(fs.existsSync('hardhat.config.js') || fs.existsSync('hardhat.config.ts') ){
-        root = "./contracts"
-    }
+
 
     const command = [
         'forge build',
@@ -71,7 +82,9 @@ async function compile() {
         `--use ${compilerSettings.solc_version}`,
         `-C ${compilerSettings.context_dir}`,
         `-o ${compilerSettings.output_dir}`,
-        `--root ${root}`,
+        `--cache-path ${compilerSettings.cache_dir}`,
+        `--root ${compilerSettings.root}`,
+        `--extra-output userdoc devdoc`,
         `-q`,
         `--remappings  @evmpack=${os.homedir()}/.evmpack/packages`
     ].join(' ');
