@@ -87,7 +87,6 @@ yargs(hideBin(process.argv))
             type: 'string'
         })
     }, (argv) => use(argv.package))
-    .command('generate-ui-schema', 'Generate a UI schema from the main contract specified in release.json', () => {}, generateUiSchema)
     .demandCommand(1, 'You need at least one command before moving on')
     .help()
     .argv;
