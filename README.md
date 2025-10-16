@@ -64,7 +64,7 @@ EVMPack is a powerful tool with a lot of features. Here's a quick rundown of wha
 | `status` | Get a quick overview of your EVMPack setup. |
 | `generate-release-note` | Let Gemini write your release notes for you. |
 | `init-from-npm [package]`| Create an `evmpack.json` file from an NPM package. |
-| `evmpack use [package] | Use a package to create a proxy. |
+| `use [package]` | Use a package to create a proxy. |
 
 
 ## 🗺️ The Road Ahead
