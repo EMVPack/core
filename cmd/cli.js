@@ -21,7 +21,6 @@ const { info, listPackages } = require("./lib/info");
 const { initFromNPM } = require("./lib/init-from-npm");
 const { link } = require("./lib/link");
 const { use } = require("./lib/use");
-const { generateUiSchema } = require("./lib/generate-ui-schema");
 const { createHiddenDirInHome } = require("./lib/utils");
 const { execSync } = require('child_process');
 const fs = require('fs');
