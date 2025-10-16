@@ -1,6 +1,6 @@
 {
   "name": "evmpack",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "scripts": {
     "deploy:opsepolia": "forge script script/Deploy.s.sol:DeployScript --rpc-url opsepolia -v ",
     "deploy:opsepolia:broadcast": "forge script script/Deploy.s.sol:DeployScript --rpc-url opsepolia -v --broadcast",

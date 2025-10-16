@@ -29,19 +29,17 @@ This project is in active development. Currently, we only support the **OP Sepol
 As of now, you need to clone this repository and link it locally:
 
 ```bash
-git clone https://github.com/evmpack/evmpack.git
-cd evmpack
-npm install && npm link
+$ npm install -g evmpack
 ```
 
 You can then verify the installation:
 ```bash
-evmpack status
+$ evmpack status
 ```
 
 ### Future Installation (Coming Soon!)
 ```bash
-npx evmpack status
+$ npx evmpack status
 ```
 
 ## 🛠️ Usage & Commands
@@ -61,10 +59,9 @@ EVMPack is a powerful tool with a lot of features. Here's a quick rundown of wha
 | `link` | Link local packages for easy development. |
 | `list` | List all available packages. |
 | `status` | Get a quick overview of your EVMPack setup. |
-| `enable-node-support` | Hook up EVMPack with your Node.js projects. |
-| `enable-foundry-support`| Hook up EVMPack with your Foundry projects. |
 | `generate-release-note` | Let Gemini write your release notes for you. |
 | `init-from-npm [package]`| Create an `evmpack.json` file from an NPM package. |
+| `evmpack use [package] | Use a package to create a proxy. |
 
 
 ## 🗺️ The Road Ahead
