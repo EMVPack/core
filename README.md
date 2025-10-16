@@ -74,7 +74,7 @@ We're just getting started! We have a lot of exciting ideas for the future of EV
 
 ## ⚙️ The Nitty-Gritty: Smart Contracts
 
-EVMPack is powered by a suite of smart contracts that handle everything from package registration to secure upgrades. If you want to dive deep into the technical details, you can find more information in the `release_note.md` file.
+EVMPack is powered by a suite of smart contracts that handle everything from package registration to secure upgrades. 
 
 ## 🤝 Let's Build Together
 
@@ -87,6 +87,6 @@ We believe in the power of collaboration. If you have an idea for how to make EV
 *   **Author**: Mikhail Ivantsov
 *   **License**: MIT
 *   **Website**: [https://evmpack.tech](https://evmpack.tech)
-*   **GitHub**: [https://github.com/evmpack](https://github.com/darkrain)
-*   **X.com**: [https://x.com/darkraintech](https://x.com/darkraintech)
-*   **Donation**: `0x602A44E855777E8b15597F0cDf476BEbB7aa70dE`
+*   **GitHub**: [https://github.com/evmpack](https://github.com/EMVPack/)
+*   **X.com**: [https://x.com/evmpack](https://x.com/evmpack)
+*   **Donation**: [giveth.io](https://giveth.io/project/the-essential-foundation-for-your-dapps?tab=donations)

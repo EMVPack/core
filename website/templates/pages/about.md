@@ -7,8 +7,6 @@
 
 ---
 
-## 🤔 Why EVMPack?
-
 Building on Ethereum can be a challenge. We have great tools for development and testing, but the post-deployment world is a bit of a wild west. That's where EVMPack comes in. It's not a replacement for your favorite tools, but a complementary layer that brings order to the chaos.
 
 Key benefits for security and reliability:
