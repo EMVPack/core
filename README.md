@@ -1,6 +1,6 @@
 # EVMPack: Blockchain Project Lifecycle Management
 
-![Version](https://img.shields.io/badge/version-1.0.0--beta.1-blue)
+![Version](https://img.shields.io/badge/version-1.0.0--beta.2-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 **EVMPack is an infrastructure project for the EVM that brings order and security to the lifecycle management of smart contracts. It combines a decentralized package registry with strong semantic versioning (SemVer 2.0.0), with a focus on securely updating implementations.**
