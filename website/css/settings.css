@@ -1,0 +1,5 @@
+body {
+  --app-main-color: #f8f9fa;
+  --logo: url("../assets/logo_transparent_for_light.png");
+  --logo-dark: url("../assets/logo_transparent_for_dark.png");
+}

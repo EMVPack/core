@@ -1,0 +1,40 @@
+<!-- Features Section -->
+<div class="container py-5">
+    <div class="row text-center">
+        {{for features tmpl=~templates['components/feature'] /}}
+    </div>
+</div>
+
+<!-- Code Snippet Section -->
+<div class="container mb-5">
+    <pre class="language-bash">
+        <code>
+            $ npm install -g evmpack 
+            $ evmpack
+            evmpack [command]
+
+            Commands:
+            evmpack enable-node-support      If you use node js , for support import use
+                                            this command, they create symlink in
+                                            node_modules/@evmpack to
+                                            homedir/.evmpack/packages
+            evmpack enable-foundry-support   If you use node js , for support import use
+                                            this command, they create symlink in
+                                            node_modules/@evmpack to
+                                            homedir/.evmpack/packages
+            evmpack generate-release-note    Use gemini for generate release_note.md
+            evmpack status                   Info about connection
+            evmpack register                 Register a new package
+            evmpack release                  Create a new release for a package
+            evmpack init                     Initialize a new evmpack.json file
+            evmpack install [package]        Install a package
+            evmpack auth                     Authenticate with the registry
+            evmpack compile                  Compile contracts
+            evmpack upgrade [package]        Upgrade a package
+            evmpack info [package]           Get information about a package
+            evmpack list                     List all available packages
+            evmpack link                     Link local packages
+            evmpack init-from-npm [package]  Initialize from an NPM package
+        </code>
+    </pre>
+</div>
