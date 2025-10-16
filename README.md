@@ -7,6 +7,10 @@
 
 ---
 
+## Documentation
+
+Please visit website: [https://evmpack.tech](https://evmpack.tech)
+
 ## 🤔 Why EVMPack?
 
 Building on Ethereum can be a challenge. We have great tools for development and testing, but the post-deployment world is a bit of a wild west. That's where EVMPack comes in. It's not a replacement for your favorite tools, but a complementary layer that brings order to the chaos.
@@ -16,7 +20,6 @@ Key benefits for security and reliability:
 - **Controlled Deployment**: An integrated proxy factory ensures that new proxy contracts are created with predictable and verified implementations.
 - **Decentralized Governance**: The right to publish new versions is strictly controlled by a list of maintainers.
 
-> To learn more about the vision and passion behind EVMPack, check out our [**Motivation**](./MOTIVATION.md).
 
 ## ⚠️ Beta Notice
 
@@ -37,9 +40,9 @@ You can then verify the installation:
 $ evmpack status
 ```
 
-### Future Installation (Coming Soon!)
+Auth before start:
 ```bash
-$ npx evmpack status
+$ evmpack auth
 ```
 
 ## 🛠️ Usage & Commands
@@ -68,7 +71,6 @@ EVMPack is a powerful tool with a lot of features. Here's a quick rundown of wha
 
 We're just getting started! We have a lot of exciting ideas for the future of EVMPack, including a deterministic static analysis system, project scaffolding, and an on-chain service registry.
 
-> To see what we're building next, check out our [**Roadmap**](./ROADMAP.md).
 
 ## ⚙️ The Nitty-Gritty: Smart Contracts
 
@@ -84,6 +86,7 @@ We believe in the power of collaboration. If you have an idea for how to make EV
 
 *   **Author**: Mikhail Ivantsov
 *   **License**: MIT
-*   **GitHub**: [https://github.com/evmpack](https://github.com/evmpack)
+*   **Website**: [https://evmpack.tech](https://evmpack.tech)
+*   **GitHub**: [https://github.com/evmpack](https://github.com/darkrain)
 *   **X.com**: [https://x.com/darkraintech](https://x.com/darkraintech)
 *   **Donation**: `0x602A44E855777E8b15597F0cDf476BEbB7aa70dE`
