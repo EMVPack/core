@@ -32,7 +32,7 @@ This project is in active development. Currently, we only support the **OP Sepol
 As of now, you need to clone this repository and link it locally:
 
 ```bash
-$ npm install -g evmpack
+$ git clone git@github.com:EMVPack/core.git evmpack && cd evmpack && npm install && npm link
 ```
 
 You can then verify the installation:
