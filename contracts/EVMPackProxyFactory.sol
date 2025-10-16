@@ -8,15 +8,18 @@ import "./EVMPackProxy.sol";
 import "./EVMPackProxyAdmin.sol";
 
 interface IEVMPackProxyFactory{
+    event ProxyCreated(address indexed proxy, address indexed proxy_admin);
+    event ProxyAdminCreated(address indexed proxy);
+
+    error IncorrectImplementation();
+    error IncorrectOwner();
+
     function usePackageRelease(string calldata name, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address);
 }
 
 contract EVMPackProxyFactory is IEVMPackProxyFactory {
 
     IEVMPack _evmpack;
-
-    error IncorrectImplementation();
-    error IncorrectOwner();
 
     constructor(address evmpack){
         _evmpack = IEVMPack(evmpack);
@@ -40,6 +43,7 @@ contract EVMPackProxyFactory is IEVMPackProxyFactory {
 
         if(!isAdminContract(owner)){
             proxy_admin = address(new EVMPackProxyAdmin(owner));
+            emit ProxyAdminCreated(proxy_admin);
         }else{
             proxy_admin = owner;
         }
@@ -47,27 +51,27 @@ contract EVMPackProxyFactory is IEVMPackProxyFactory {
 
         if(bytes(salt).length == 0 ){
             EVMPackProxy proxy = new EVMPackProxy(
-                address(this),
+                address(_evmpack),
                 name,
                 version,
                 impl.target,
                 proxy_admin,
                 initData
             );
-
+            emit ProxyCreated(address(proxy), proxy_admin);
             return address(proxy);
         }else{
             EVMPackProxy proxy = new EVMPackProxy{
                 salt: _salt(salt, initData)
             }(
-                address(this),
+                address(_evmpack),
                 name,
                 version,
                 impl.target,
                 proxy_admin,
                 initData
             );
-
+            emit ProxyCreated(address(proxy), proxy_admin);
             return address(proxy);
         }
 
@@ -75,14 +79,13 @@ contract EVMPackProxyFactory is IEVMPackProxyFactory {
 
 
     function isAdminContract(address _addr) internal view returns (bool) {
-        try IERC165(_addr).supportsInterface(type(IEVMPackProxyAdmin).interfaceId) returns (bool success) {
-            if(success){
-                return true;
-            }else{
-                return false;
-            }
+        if (_addr.code.length == 0) {
+            return false;
+        }
 
-        } catch  {
+        try IERC165(_addr).supportsInterface(type(IEVMPackProxyAdmin).interfaceId) returns (bool success) {
+            return success;
+        } catch {
             return false;
         }
     }

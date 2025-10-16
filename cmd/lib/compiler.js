@@ -4,6 +4,8 @@ const { loadConfig } = require('./config');
 const { execSync } = require('child_process');
 const os = require('os');
 
+const { createSymlink } = require("./utils");
+
 async function compile() {
     try {
         execSync('command -v forge');
@@ -32,6 +34,8 @@ async function compile() {
         fs.writeFileSync('release.json', JSON.stringify(releaseConfig, null, 2));
     }
 
+  
+
     if (!releaseConfig.compiler) {
         releaseConfig.compiler = {
             via_ir: true,
@@ -43,12 +47,30 @@ async function compile() {
             no_metadata: true,
             solc_version: "0.8.28",
             output_dir: "./artifacts",
-            context_dir: "./"
+            cache_dir: "./cache",
+            context_dir: "./",
+            root:  "./"
         };
+
+        if(fs.existsSync('foundry.lock')){
+            releaseConfig.compiler.root = "./src"
+            releaseConfig.compiler.output_dir = "../artifacts"
+            releaseConfig.compiler.cache_dir = "../cache"
+        }
+
+        if(fs.existsSync('hardhat.config.js') || fs.existsSync('hardhat.config.ts') ){
+            releaseConfig.compiler.root = "./contracts"
+            releaseConfig.compiler.output_dir = "../artifacts"
+            releaseConfig.compiler.cache_dir = "../cache"        
+        }
+
         fs.writeFileSync('release.json', JSON.stringify(releaseConfig, null, 2));
     }
 
     const compilerSettings = releaseConfig.compiler;
+
+
+
 
     const command = [
         'forge build',
@@ -60,15 +82,22 @@ async function compile() {
         `--use ${compilerSettings.solc_version}`,
         `-C ${compilerSettings.context_dir}`,
         `-o ${compilerSettings.output_dir}`,
-        `--root ./`,
-        `--skip node_modules/*`,
+        `--cache-path ${compilerSettings.cache_dir}`,
+        `--root ${compilerSettings.root}`,
+        `--extra-output userdoc devdoc`,
         `-q`,
         `--remappings  @evmpack=${os.homedir()}/.evmpack/packages`
     ].join(' ');
 
+    
+
     try {
         console.log(`Executing: ${command}`);
+        execSync('rm -f @evmpack')
         execSync(command, { stdio: 'inherit' });
+                  
+        await createSymlink(process.env.EVM_PACK_DIR+'/packages', './@evmpack');
+
         console.log('Compilation finished successfully.');
     } catch {
         console.error('Compilation failed');

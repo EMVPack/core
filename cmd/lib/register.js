@@ -7,6 +7,8 @@ const { uploadFile } = require("./ipfs");
 const { accountSelection } = require("./ui");
 const { prepareRelease } = require("./release")
 const { packageTypes } = require("../lib/init")
+const { execSync } = require('child_process');
+const { createSymlink } = require("./utils");
 
 
 async function prepareAdd(deployer, external_implementation_address = false) {
@@ -38,11 +40,13 @@ async function register(external_implementation_address = false) {
     const deployer = await accountSelection();
     const evmpack = await getEVMPack(deployer);
 
-    console.log(await evmpack.getVersion())
+    
     try {
         console.log('Starting package registration...');
+        execSync('rm @evmpack')
         const { add, implementation } = await prepareAdd(deployer, external_implementation_address);
-        
+        await createSymlink(process.env.EVM_PACK_DIR+'/packages', './@evmpack');
+
         try {
             const fee = await evmpack.getRegisterFee();
             let tx;

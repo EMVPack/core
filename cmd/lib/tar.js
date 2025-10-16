@@ -6,7 +6,8 @@ const glob = require("glob");
 async function createTarball(name, version) {
     const tarball_path = `/tmp/${name}-${version}.tgz`;
 
-    let ignore = ["./cache/**", "./node_modules/**", "./.git/**", ".gitignore"];
+
+    let ignore = ["./cache/**", "./node_modules/**", "./.git/**", ".gitignore", "@evmpack"];
 
     if (fs.existsSync('.gitignore')) {
         const gitignore = fs.readFileSync('.gitignore', 'utf8').split('\n').filter(Boolean);

@@ -1,12 +1,17 @@
 {
   "name": "evmpack",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "scripts": {
     "deploy:opsepolia": "forge script script/Deploy.s.sol:DeployScript --rpc-url opsepolia -v ",
     "deploy:opsepolia:broadcast": "forge script script/Deploy.s.sol:DeployScript --rpc-url opsepolia -v --broadcast",
+    "deployproxyfactory:opsepolia": "forge script script/DeployProxyFactory.s.sol:DeployScript --rpc-url opsepolia -v ",
+    "deployproxyfactory:opsepolia:broadcast": "forge script script/DeployProxyFactory.s.sol:DeployScript --rpc-url opsepolia -v --broadcast",    
+    "deploy:sepolia": "forge script script/Deploy.s.sol:DeployScript --rpc-url sepolia -v ",
+    "deploy:sepolia:broadcast": "forge script script/Deploy.s.sol:DeployScript --rpc-url sepolia -v --broadcast",
     "upgrade:opsepolia": "forge script script/Upgrade.s.sol:UpgradeScript --rpc-url opsepolia --private-key $EVMPACK_PRIVATE_KEY -vvvv --sig 'run(address)' 0xF7880cF12bA6ce5EFB4f8131C3831582780E39a2",
     "upgrade:opsepolia:broadcast": "forge script script/Upgrade.s.sol:UpgradeScript --rpc-url opsepolia --private-key $EVMPACK_PRIVATE_KEY -vvvv --sig 'run(address)' 0xF7880cF12bA6ce5EFB4f8131C3831582780E39a2 --broadcast",
     "test:contracts": "forge test",
+    "website": "npx serve website",
     "lint:sol": "slither . --foundry-out-directory artifacts --exclude-low --exclude different-pragma,incorrect-return-in-assembly,assembly-usage,low-level-calls"
   },
   "dependencies": {

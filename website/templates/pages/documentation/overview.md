@@ -1,49 +1,33 @@
-# EVMPack: Blockchain Project Lifecycle Management
+# 🚀 Getting Started
 
-![Version](https://img.shields.io/badge/version-1.0.0--beta.1-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-
-**EVMPack is an infrastructure project for the EVM that brings order and security to the lifecycle management of smart contracts. It combines a decentralized package registry with strong semantic versioning (SemVer 2.0.0), with a focus on securely updating implementations.**
-
----
-
-## Documentation
-
-Please visit website: [https://evmpack.tech](https://evmpack.tech)
-
-## 🤔 Why EVMPack?
-
-Building on Ethereum can be a challenge. We have great tools for development and testing, but the post-deployment world is a bit of a wild west. That's where EVMPack comes in. It's not a replacement for your favorite tools, but a complementary layer that brings order to the chaos.
-
-Key benefits for security and reliability:
-- **Transparent Versioning**: All available contract versions and their dependencies are recorded on-chain.
-- **Controlled Deployment**: An integrated proxy factory ensures that new proxy contracts are created with predictable and verified implementations.
-- **Decentralized Governance**: The right to publish new versions is strictly controlled by a list of maintainers.
-
-
-## ⚠️ Beta Notice
-
-This project is in active development. Currently, we only support the **OP Sepolia testnet**.
-
-## 🚀 Getting Started
-
-### Installation
+## Installation
 
 As of now, you need to clone this repository and link it locally:
 
 ```bash
-$ git clone git@github.com:EMVPack/core.git evmpack && cd evmpack && npm install && npm link
+npm install -g evmpack
 ```
 
 You can then verify the installation:
 ```bash
-$ evmpack status
+evmpack status
+
+EVMPack: 0x4fCD571Dbc9C7f8b235182B704665Ffd9dAC6289
+EVMPack network: https://sepolia.optimism.io
+IPFS storage api key: 20C291cBB2eF8...
+IPFS storage endpoint : https://storage.evmpack.tech
+
 ```
 
-Auth before start:
+Now you should add your private key for sign all of transactions 
+
 ```bash
 $ evmpack auth
+? Enter your Ethereum private key: 0x...
+? Etner your password: 
 ```
+
+After that your private key will be stored in ~/.evmpack/auth_key
 
 ## 🛠️ Usage & Commands
 
@@ -62,15 +46,17 @@ EVMPack is a powerful tool with a lot of features. Here's a quick rundown of wha
 | `link` | Link local packages for easy development. |
 | `list` | List all available packages. |
 | `status` | Get a quick overview of your EVMPack setup. |
+| `enable-node-support` | Hook up EVMPack with your Node.js projects. |
+| `enable-foundry-support`| Hook up EVMPack with your Foundry projects. |
 | `generate-release-note` | Let Gemini write your release notes for you. |
 | `init-from-npm [package]`| Create an `evmpack.json` file from an NPM package. |
-| `evmpack use [package] | Use a package to create a proxy. |
 
 
 ## 🗺️ The Road Ahead
 
 We're just getting started! We have a lot of exciting ideas for the future of EVMPack, including a deterministic static analysis system, project scaffolding, and an on-chain service registry.
 
+> To see what we're building next, check out our [**Roadmap**](./ROADMAP.md).
 
 ## ⚙️ The Nitty-Gritty: Smart Contracts
 
@@ -86,7 +72,6 @@ We believe in the power of collaboration. If you have an idea for how to make EV
 
 *   **Author**: Mikhail Ivantsov
 *   **License**: MIT
-*   **Website**: [https://evmpack.tech](https://evmpack.tech)
-*   **GitHub**: [https://github.com/evmpack](https://github.com/darkrain)
+*   **GitHub**: [https://github.com/evmpack](https://github.com/evmpack)
 *   **X.com**: [https://x.com/darkraintech](https://x.com/darkraintech)
 *   **Donation**: `0x602A44E855777E8b15597F0cDf476BEbB7aa70dE`

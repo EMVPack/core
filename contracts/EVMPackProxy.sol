@@ -11,12 +11,23 @@ import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.s
 
 
 import "./IEVMPack.sol";
-/**
- * @dev Interface for {TransparentUpgradeableProxy}. In order to implement transparency, {TransparentUpgradeableProxy}
- * does not implement this interface directly, and its upgradeability mechanism is implemented by an internal dispatch
- * mechanism. The compiler is unaware that these functions are implemented by {TransparentUpgradeableProxy} and will not
- * include them in the ABI so this interface must be used to interact with it.
- */
+
+
+library Bytes32ToString {
+    function toString(bytes32 _bytes32) internal pure returns (string memory) {
+        uint8 i = 0;
+        while (i < 32 && _bytes32[i] != 0) {
+            i++;
+        }
+        bytes memory bytesArray = new bytes(i);
+        for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
+            bytesArray[i] = _bytes32[i];
+        }
+        return string(bytesArray);
+    }
+}
+
+
 interface IEVMPackProxy is IERC1967 {
     /**
      * @notice Upgrades the proxy to a new implementation and calls a function on the new implementation.
@@ -34,14 +45,19 @@ interface IEVMPackProxy is IERC1967 {
  * It uses a pre-existing ProxyAdmin and includes EVMPack-specific functionality.
  */
 contract EVMPackProxy is ERC1967Proxy {
+    using Bytes32ToString for bytes32;
+
     // An immutable address for the admin to avoid unnecessary SLOADs before each call
     // at the expense of removing the ability to change the admin once it's set.
     // This is acceptable if the admin is always a ProxyAdmin instance or similar contract
     // with its own ability to transfer the permissions to another account.
     address private immutable _admin;
-    string private _package;
     address immutable _evmpack;
-    bytes32 private _version;
+
+    // keccak256("evmpack.proxy.package")
+    bytes32 private constant _PACKAGE_SLOT = 0x70498b65356a69a2f8f7c8395b585893b5e05429324c29a9de93624e060412d3;
+    // keccak256("evmpack.proxy.version")
+    bytes32 private constant _VERSION_SLOT = 0x997a8ac7b54ff35c06e833365e453375ff0d9c46337b8388c9b1417409310334;
 
 
     /**
@@ -67,11 +83,23 @@ contract EVMPackProxy is ERC1967Proxy {
         _admin = proxyAdmin;
         _evmpack = evmpack;
 
-        assembly ("memory-safe") {
-            sstore(_version.slot, keccak256(add(version, 0x20), mload(version)))
+        require(bytes(name).length <= 32, "EVMPackProxy: package name too long");
+        require(bytes(version).length <= 32, "EVMPackProxy: version string too long");
+
+        bytes32 nameBytes32;
+        assembly {
+            nameBytes32 := mload(add(name, 32))
         }
-        
-        _package = name;
+
+        bytes32 versionBytes32;
+        assembly {
+            versionBytes32 := mload(add(version, 32))
+        }
+
+        assembly {
+            sstore(_PACKAGE_SLOT, nameBytes32)
+            sstore(_VERSION_SLOT, versionBytes32)
+        }
         
         // Set the storage value and emit an event for ERC-1967 compatibility
         ERC1967Utils.changeAdmin(_proxyAdmin());
@@ -103,23 +131,39 @@ contract EVMPackProxy is ERC1967Proxy {
      * @dev Dispatches the upgradeToAndCall function.
      */
     function _dispatchUpgradeToAndCall() private {
-        (string memory version, bytes memory data) = abi.decode(msg.data[4:], (string, bytes));
+        (string memory newVersionString, bytes memory data) = abi.decode(msg.data[4:], (string, bytes));
         
-        bytes32 new_version;
-        
-        assembly ("memory-safe") {
-            new_version := keccak256(add(version, 0x20), mload(version))
+        require(bytes(newVersionString).length <= 32, "EVMPackProxy: version string too long");
+        bytes32 newVersionBytes32;
+        assembly {
+            newVersionBytes32 := mload(add(newVersionString, 32))
         }
 
-        if(new_version == _version){
+        bytes32 currentVersionBytes32;
+        assembly {
+            currentVersionBytes32 := sload(_VERSION_SLOT)
+        }
+
+        if (newVersionBytes32 == currentVersionBytes32) {
             revert SameVersion();
         }
 
-        _version = new_version;
+        assembly {
+            sstore(_VERSION_SLOT, newVersionBytes32)
+        }
         
-        (,IEVMPack.Implementation memory implementation) = IEVMPack(_evmpack).getPackageRelease(_package,version);
+        bytes32 packageNameBytes32;
+        assembly {
+            packageNameBytes32 := sload(_PACKAGE_SLOT)
+        }
+
+        string memory packageNameString = packageNameBytes32.toString();
+
+        (, IEVMPack.Implementation memory implementation) = IEVMPack(_evmpack).getPackageRelease(
+            packageNameString,
+            newVersionString
+        );
 
         ERC1967Utils.upgradeToAndCall(implementation.target, data);
-
     }
 }

@@ -13,6 +13,9 @@ contract DeployScript is Script {
         uint256 deployerPrivateKey = vm.envUint("EVMPACK_PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
+        address[] memory accounts = vm.getWallets();
+        console.log(accounts[0]);
+
         ProxyFactory proxyFactory = new ProxyFactory();
         EVMPack evmpackImplementation = new EVMPack();
         

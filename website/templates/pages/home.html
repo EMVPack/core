@@ -1,0 +1,38 @@
+<!-- Features Section -->
+<div class="container py-5">
+    <div class="row text-center">
+        {{for features tmpl=~templates['components/feature'] /}}
+    </div>
+</div>
+
+<!-- Code Snippet Section -->
+<div class="container mb-5">
+    <pre class="language-bash">
+        <code>
+            $ git clone git@github.com:EMVPack/core.git evmpack && cd evmpack && npm install && npm link
+            $ evmpack
+            evmpack [command]
+
+            Commands:
+            evmpack generate-release-note    Use gemini for generate release_note.md
+            evmpack status                   Info about connection
+            evmpack register                 Register a new package
+            evmpack release                  Create a new release for a package
+            evmpack init                     Initialize a new evmpack.json file
+            evmpack install [package]        Install a package
+            evmpack auth                     Authenticate with the registry
+            evmpack compile                  Compile contracts
+            evmpack upgrade [package]        Upgrade a package
+            evmpack info [package]           Get information about a package
+            evmpack list                     List all available packages
+            evmpack link                     Link local packages
+            evmpack init-from-npm [package]  Initialize from an NPM package
+            evmpack use [package]            Use a package to create a proxy
+
+            Options:
+            --version  Show numer version                                 
+            --help     Show help                                       
+
+        </code>
+    </pre>
+</div>

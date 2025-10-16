@@ -1,5 +1,6 @@
 const { getEVMPack } = require("./deployment");
 const { getProvider } = require("./ui");
+const { downloadFileContent } = require("./ipfs");
 
 async function getPackage(name) {
     const provider = await getProvider();
@@ -26,7 +27,7 @@ async function getPackageRelease(name, version) {
     try {
         const [releaseFromState, implementation] = await evmpack.getPackageRelease(name, version);
 
-        const manifestBuffer = await ipfs.downloadFileContent(releaseFromState.manifest);
+        const manifestBuffer = await downloadFileContent(releaseFromState.manifest);
         const manifest = JSON.parse(manifestBuffer.toString());
         manifest.version = releaseFromState.version;
 

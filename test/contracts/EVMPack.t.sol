@@ -161,12 +161,12 @@ contract EVMPackTest is Test {
 
         evmpack.registerImplementation(add, implementation);
 
-        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), "", "");
+        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), abi.encodeWithSignature("initialize(uint256,address)",32, address(this)), "");
 
         DummyImplementation proxyDummy = DummyImplementation(proxy);
         proxyDummy.setX(42);
 
-        assertEq(proxyDummy.x(), 42);
+        assertEq(proxyDummy._x(), 42);
     }
 
 
@@ -186,12 +186,12 @@ contract EVMPackTest is Test {
 
         evmpack.registerImplementation(add, implementation);
 
-        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), "", "my-super-salt");
+        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), abi.encodeWithSignature("initialize(uint256,address)",32, address(this)), "my-super-salt");
 
         DummyImplementation proxyDummy = DummyImplementation(proxy);
         proxyDummy.setX(42);
 
-        assertEq(proxyDummy.x(), 42);
+        assertEq(proxyDummy._x(), 42);
     }
 
 
@@ -213,12 +213,14 @@ contract EVMPackTest is Test {
 
         address proxy_admin = address(new EVMPackProxyAdmin(address(this)));
 
-        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, proxy_admin, "", "my-super-salt");
+        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, proxy_admin, abi.encodeWithSignature("initialize(uint256,address)",32, address(this)), "my-super-salt");
 
         DummyImplementation proxyDummy = DummyImplementation(proxy);
         proxyDummy.setX(42);
 
-        assertEq(proxyDummy.x(), 42);
+        assertEq(proxyDummy._x(), 42);
     }
+
+
      
 }
