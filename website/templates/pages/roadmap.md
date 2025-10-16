@@ -14,7 +14,73 @@ Before we dive into the future, let's take a moment to appreciate how far we've 
 
 This is the bedrock upon which we'll build the future of EVMPack.
 
-## 1. A Guardian Angel for Your Code: Deterministic Static Analysis
+## 0. Workspace
+
+Now we can already use package implementations, it looks like this:
+
+```bash
+
+    $ evmpack use blog@1.1.0
+    Using package: blog version: 1.1.0
+    ✔ Enter your password to decrypt your private key:
+    ✔ Enter EVMPack ProxyAdmin address (optional): 
+    ✔ Enter a salt for CREATE2 (optional): example
+    Please provide arguments for the initializer function: initialize(address)
+    ✔ Enter value for '' (type: address): 0x5505957ff5927F29eAcaBbBE8A304968BF2dc064
+    Proxy for blog@1.1.0 deployed at: 0x061968cCDC85e1be08fdAE15120A47C394d2000F with admin 0x59c6Fa34c02B1a54ef030c7D46A151B45081a3Cb
+
+```
+
+But now we need to remember all these addresses, make no mistakes, and, God forbid, lose them. Then we'll have to go to the explorer and extract our addresses from transactions. This is inconvenient, and we'll do everything we can to make it easy to work with implementations and eliminate the need to store addresses. Here's an example of how it will work.
+
+```bash
+
+$ evmpack workspace create
+✔ Enter workspace name: Personal
+Workspace create successfully!
+
+$ evmpack workspace list
+- Personal [ProxyAdmins:0, UsedPackages:0]
+
+$ evmpack use blog@1.1.0
+Using package: blog version: 1.1.0
+✔ Enter your password to decrypt your private key:
+✔ Select workspace: Personal
+✔ Enter name app: My blog
+✔ Select EVMPack ProxyAdmin (optional): 
+✔ Enter a salt for CREATE2 (optional): example
+Please provide arguments for the initializer function: initialize(address owner)
+✔ Select value for 'owner' (account): Me
+
+You have successfully started using package blog@1.1.0, named it "My blog" and stored in Personal workspace
+
+$ evmpack workspace list
+- Personal [ProxyAdmins:1, Apps:1]
+
+$ evmpack workspace Personal --apps
+| Name    | Package    | Admin         |
+| My blog | blog@1.1.0 | PersonalAdmin |
+
+$ evmpack workspace Personal --admins
+
+| Name          | Apps                 |
+| PersonalAdmin | My blog - blog@1.1.0 |
+
+$ evmpack workspace Personal --checkupdates
+| Name    | Package    | Latest version |
+| My blog | blog@1.1.0 | 1.1.5          |
+
+$ evmpack workspace Personal --update
+✔ Select apps: My blog
+
+My blog updated from blog@1.1.0 -> blog@1.1.5 success!
+
+
+```
+
+## 1. Security
+
+### 1.1 A Guardian Angel for Your Code: Deterministic Static Analysis
 
 Wouldn't it be great if you had a guardian angel watching over your code, catching potential security issues before they ever make it to production? That's what we're building with our deterministic static analysis system.
 
@@ -22,46 +88,52 @@ We're talking about a tool that will automatically scan your code for common vul
 
 But it's only first step for security and hand audit.
 
-## 2. Manager of documentation
+### 1.2 Economic guarantee of security
+
+In the blockchain world, a vulnerability can have major consequences. Users and investors don't know whether to trust an audit report, and not everyone is familiar with even the top auditing companies. No one wants to trust a PDF file.
+
+**How will this work in our world?**
+
+A package that wants to be trusted must provide a security deposit. The developer can deposit any amount themselves or pay a company that will cover the package with its security deposit after the audit.
+
+Users will see the amount of the package's insurance and decide whether to use it.
+
+The security deposit will be managed entirely by the DAO, meaning the deposit cannot be returned to the owner. In the event of an insured event, the deposit can be used to compensate for losses.
+
+The ratio of the assets managed by the package to the deposit can be displayed and a rating can be generated.
+
+
+## 2. UI
+
+Each contract has its own ABI, and it's designed for program-to-program interaction. For each contract, we must develop a design, then layout it, debug it, and so on.
+
+This is a very tedious and cost-inefficient process, and most contracts have the same type of user interaction:
+- list objects,
+- display object information,
+- add object,
+- update object,
+- delete object
+
+For all this, we can create an easily configurable, unified interface similar to an ABI, let's call it a UPI (User Programming Interface), but one designed for building programs that will interact with users. We just need to standardize the data structure that the generators will rely on.
+
+Generators can generate user UIs on the fly with each new version, and we'll forget about ABI and UI compatibility forever.
+
+## 3. Manager of documentation
 
 Convenient management of all documentation, writing documentation using AI, checking documentation for compliance with changes before publishing a release
 
 
-## 3. The App Store for Smart Contracts and them deploed implementations: A Curated Catalog
+## 4. The App Store for Smart Contracts and them deploed implementations: A Curated Catalog
 
 Finding high-quality, audited smart contracts shouldn't be a treasure hunt. We're building a curated catalog that will be like an app store for smart contracts.
 
-You'll be able to browse, search, and filter packages, read reviews from the community, and find the perfect components for your next project. It's all about making it easier to stand on the shoulders of giants. You need ready and safety of implementation some Paymaster? Just select what you want and use it, when new version will come, you will be notify and you can upgrade safety, because you can see how many other contracts switch to new version and have a new implementation audit.
+You'll be able to browse, search, and filter packages, read reviews from the community, and find the perfect components for your next project. It's all about making it easier to stand on the shoulders of giants. You need ready and safety of implementation some Paymaster? Just select what you want and use it, when new version will come, you will be notify and you can upgrade safety, because you can see how many other contracts switch to new version and check audit insurance rating.
 
-## 4. Bridging the Gap: The On-Chain Service Registry
+## 5. Bridging the Gap: The On-Chain Service Registry
 
 It's time to bring the on-chain and off-chain worlds closer together. We're creating a decentralized marketplace for web2 services that you can access directly from your smart contracts.
 
 Need to send an SMS, store a file on IPFS, or get some data from an API? You'll be able to find a provider in our on-chain service registry. It's all about making it easier to build powerful applications that connect to the real world.
-
-## 5. From Zero to Hero in Minutes: Project Scaffolding
-
-Getting started with a new project should be easy. That's why we're creating a project scaffolding system that will let you go from zero to hero in minutes.
-
-We'll have templates for all kinds of projects, whether you're building a simple library, a reusable implementation, or a full-fledged dApp. Just run `evmpack init`, choose your template, and you're off to the races.
-
-## 6. SemVer on Autopilot: Smart Versioning
-
-Semantic versioning is a powerful tool, but it can be a pain to manage manually. We're going to put SemVer on autopilot.
-
-We'll have tools to automatically validate and bump your version numbers, so you can focus on writing code instead of worrying about whether you've followed the rules. We'll also create a set of guides and best practices to help you navigate the wonderful world of versioning.
-
-## 7. Create econnomic model
-
-There is no sustainable economic model yet, but there are the following thoughts that require discussion and careful analysis:
-
-*   **Fee for use** Those implementations that have passed the audit have great value, the developers have spent a huge amount of money on development and audit, they are responsible. By implementation, I mean not just a ready-made smart contract code, but a deployed smart contract implementation.
-And if another project pays for using such an implementation when using it, then at least it will pay off. Popular contracts will be able to make good money, and those who use it can easily prove that they are using an audited implementation of a specific smart contract.
-
-*   **Pay for public** Without any fee you can register package, but this package will be without public indexer, he will be just for you and your team. But if you ready to show for all comunnity? you should to pay some fee. this is protection from garbage packages and spam. 
-
-*   **Payment for achievements** When registering a package, you can pay for proof of verification by static analyzers (look at point №1), and get achivment NFT for your package, this may be enough for simple smart contracts. The achivment system can be easily scaled
-
 
 ## 8. Audit code
 

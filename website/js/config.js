@@ -76,7 +76,13 @@ const config = {
                     layout: 'layouts/sidebar', 
                     page: 'pages/documentation/add_release.md',
                     menuTitle: 'Add new release'
-                }                                
+                },
+                '/use_cli': {
+                    title: 'Use package implementation by CLI',
+                    layout: 'layouts/sidebar', 
+                    page: 'pages/documentation/use_cli.md',
+                    menuTitle: 'Use implementation'
+                }                                       
             }
         }
     }
