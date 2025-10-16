@@ -1,8 +1,0 @@
-{
-  "optimism-sepolia": {
-    "EVMPack": {
-      "address": "0x4fCD571Dbc9C7f8b235182B704665Ffd9dAC6289",
-      "startBlock": 32592612
-    }
-  }
-}
