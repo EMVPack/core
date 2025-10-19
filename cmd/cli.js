@@ -14,19 +14,35 @@ const { init } = require("./lib/init");
 const { register } = require("./lib/register");
 const { install } = require("./lib/install");
 const { compile } = require("./lib/compiler");
-const { auth } = require("./lib/auth");
+const { addKey, listKeys, selectKey, getSelectedKey } = require("./lib/auth");
 const { upgrade } = require("./lib/upgrade");
 const { addRelease } = require("./lib/release");
 const { info, listPackages } = require("./lib/info");
 const { initFromNPM } = require("./lib/init-from-npm");
 const { link } = require("./lib/link");
 const { use } = require("./lib/use");
+const { selectNetwork, getSelectedNetwork } = require("./lib/networks");
 const { createHiddenDirInHome } = require("./lib/utils");
 const { execSync } = require('child_process');
-const fs = require('fs');
+const chalk = require('chalk');
+const boxen = require('boxen');
+const { version } = require('../package.json');
+
 
 createHiddenDirInHome(process.env.EVM_PACK_DIR+"/packages")
 
+const selectedNetwork = getSelectedNetwork();
+const selectedKey = getSelectedKey();
+
+let boxContent = `${chalk.blue.bold(`EVMPack CLI v${version}`)}\n\n`;
+boxContent += `${chalk.green('Selected network:')} ${selectedNetwork.name}`;
+if (selectedKey) {
+    boxContent += `\n${chalk.green('Selected key:')} ${selectedKey.name} (${selectedKey.address})`;
+} else {
+    boxContent += `\n${chalk.yellow('No key selected. Use \'evmpack auth select-key\' to select one.')}`;
+}
+
+console.log(boxen(boxContent, { padding: 1, margin: 1, borderStyle: 'round', borderColor: 'green' }));
 
 yargs(hideBin(process.argv))
     .scriptName('evmpack')
@@ -35,12 +51,6 @@ yargs(hideBin(process.argv))
         const output = execSync(`gemini -y -p \"Create or add if exist to ./release_note.md based on all of files in current directory, if you see natspec comment, create from them documentation\"`)
         console.log("Gemini answer", output.toString())
 
-    })
-    .command('status', 'Info about connection', () =>{}, async function() {
-        console.log(`EVMPack: ${process.env.EVM_PACK_ADDRESS}`)
-        console.log(`EVMPack network: ${process.env.EVM_PACK_NETWORK}`)
-        console.log(`IPFS storage api key: ${process.env.STORAGE_API_KEY}`)
-        console.log(`IPFS storage endpoint : ${process.env.STORAGE_ENDPOINT}`)
     })
     .command('register', 'Register a new package', () => { }, register)
     .command('release', 'Create a new release for a package', () => { }, addRelease)
@@ -58,7 +68,13 @@ yargs(hideBin(process.argv))
             install();
         }
     })
-    .command('auth', 'Authenticate with the registry', () => { }, auth)
+    .command('auth', 'Manage authentication', (yargs) => {
+        yargs
+            .command('add', 'Add or import a new key', () => {}, addKey)
+            .command('keys', 'List all saved keys', () => {}, listKeys)
+            .command('select-key', 'Select an active key', () => {}, selectKey)
+            .demandCommand(1, 'You must specify a subcommand for auth.')
+    })
     .command('compile', 'Compile contracts', () => { }, compile)
     .command('upgrade [package]', 'Upgrade a package', (yargs) => {
         yargs.positional('package', {
@@ -86,6 +102,7 @@ yargs(hideBin(process.argv))
             type: 'string'
         })
     }, (argv) => use(argv.package))
+    .command('select-network', 'Select a network to work with', () => { }, selectNetwork)
     .demandCommand(1, 'You need at least one command before moving on')
     .help()
     .argv;

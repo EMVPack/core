@@ -10,7 +10,7 @@ const path = require('path');
 const { ethers } = require('ethers');
 const { execSync } = require('child_process');
 const { implTypes } = require("./init");
-const { accountSelection } = require("./ui");
+const { accountSelection } = require("./auth");
 
 const { createSymlink } = require("./utils");
 

@@ -4,7 +4,7 @@ const {
     validateConfig
 } = require("./config");
 const { uploadFile } = require("./ipfs");
-const { accountSelection } = require("./ui");
+const { accountSelection } = require("./auth");
 const { prepareRelease } = require("./release")
 const { packageTypes } = require("../lib/init")
 const { execSync } = require('child_process');

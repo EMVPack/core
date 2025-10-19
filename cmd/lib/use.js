@@ -1,6 +1,6 @@
 const { ethers } = require('ethers');
 const { getEVMPack, getEVMPackProxyFactory} = require('./deployment');
-const {accountSelection} = require("./ui")
+const {accountSelection} = require("./auth")
 const inquirer = require('inquirer');
 
 async function use(packageNameAndVersion) {
