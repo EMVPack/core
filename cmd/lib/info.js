@@ -1,5 +1,5 @@
 const { getEVMPack } = require("./deployment");
-const { getProvider } = require("./ui");
+const { getProvider } = require("./networks");
 const ipfs = require("./ipfs");
 
 

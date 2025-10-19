@@ -1,5 +1,5 @@
 const { getEVMPack } = require("./deployment");
-const { getProvider } = require("./ui");
+const { getProvider } = require("./networks");
 const { downloadFileContent } = require("./ipfs");
 
 async function getPackage(name) {
