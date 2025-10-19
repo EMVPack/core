@@ -31,18 +31,7 @@ const { version } = require('../package.json');
 
 createHiddenDirInHome(process.env.EVM_PACK_DIR+"/packages")
 
-const selectedNetwork = getSelectedNetwork();
-const selectedKey = getSelectedKey();
-
-let boxContent = `${chalk.blue.bold(`EVMPack CLI v${version}`)}\n\n`;
-boxContent += `${chalk.green('Selected network:')} ${selectedNetwork.name}`;
-if (selectedKey) {
-    boxContent += `\n${chalk.green('Selected key:')} ${selectedKey.name} (${selectedKey.address})`;
-} else {
-    boxContent += `\n${chalk.yellow('No key selected. Use \'evmpack auth select-key\' to select one.')}`;
-}
-
-console.log(boxen(boxContent, { padding: 1, margin: 1, borderStyle: 'round', borderColor: 'green' }));
+showStatus()
 
 yargs(hideBin(process.argv))
     .scriptName('evmpack')
@@ -71,8 +60,8 @@ yargs(hideBin(process.argv))
     .command('auth', 'Manage authentication', (yargs) => {
         yargs
             .command('add', 'Add or import a new key', () => {}, addKey)
-            .command('keys', 'List all saved keys', () => {}, listKeys)
-            .command('select-key', 'Select an active key', () => {}, selectKey)
+            .command('accounts', 'List all added accounts', () => {}, listKeys)
+            .command('select-account', 'Select an active account', () => {}, selectKey)
             .demandCommand(1, 'You must specify a subcommand for auth.')
     })
     .command('compile', 'Compile contracts', () => { }, compile)
@@ -106,4 +95,21 @@ yargs(hideBin(process.argv))
     .demandCommand(1, 'You need at least one command before moving on')
     .help()
     .argv;
+
+
+function showStatus(){
+
+    const selectedNetwork = getSelectedNetwork();
+    const selectedKey = getSelectedKey();
+
+    let boxContent = `${chalk.blue.bold(`EVMPack CLI v${version}`)}\n\n`;
+    boxContent += `${chalk.green('Selected network:')} ${selectedNetwork.name}`;
+    if (selectedKey) {
+        boxContent += `\n${chalk.green('Selected key:')} ${selectedKey.name} (${selectedKey.address})`;
+    } else {
+        boxContent += `\n${chalk.yellow('No key selected. Use \'evmpack auth select-key\' to select one.')}`;
+    }
+
+    console.log(boxen(boxContent, { padding: 1, margin: 1, borderStyle: 'round', borderColor: 'green' }));
+}
 

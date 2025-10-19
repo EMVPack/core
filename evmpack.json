@@ -1,0 +1,14 @@
+{
+  "name": "core@evmpack",
+  "type": "library",
+  "title": "Core contracts and cli of EVMPack",
+  "description": "Full tool of evmpack",
+  "author": "Mikhail Ivantsov",
+  "license": "MIT",
+  "git": "https://github.com/EMVPack/core",
+  "tags": [
+    "evmpack",
+    "core"
+  ],
+  "homepage": "https://evmpack.tech/"
+}

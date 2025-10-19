@@ -15,7 +15,7 @@ async function createTarball(name, version) {
     }
 
     const files = [
-        ...glob.sync('./*', { ignore }),
+        //...glob.sync('./*', { ignore }),
         ...glob.sync('./artifacts/**', { ignore }),
         ...glob.sync('evmpack.json', { ignore }),
         ...glob.sync('release.json', { ignore }),

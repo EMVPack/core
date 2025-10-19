@@ -2,11 +2,11 @@
 pragma solidity ^0.8.28;
 
 import "forge-std/Test.sol";
-import "../../contracts/EVMPack.sol";
-import "../../contracts/EVMPackProxyFactory.sol";
-import "../../contracts/EVMPackProxyAdmin.sol";
-import "../../contracts/EVMPackLib.sol";
-import "../../contracts/SemVer.sol";
+import "src/EVMPack.sol";
+import "src/EVMPackProxyFactory.sol";
+import "src/EVMPackProxyAdmin.sol";
+import "src/EVMPackLib.sol";
+import "src/SemVer.sol";
 
 import "./DummyImplementation.sol";
 
@@ -161,7 +161,8 @@ contract EVMPackTest is Test {
 
         evmpack.registerImplementation(add, implementation);
 
-        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), abi.encodeWithSignature("initialize(uint256,address)",32, address(this)), "");
+
+        (address proxy, ) = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), abi.encodeWithSignature("initialize(uint256,address)",32, address(this)), "");
 
         DummyImplementation proxyDummy = DummyImplementation(proxy);
         proxyDummy.setX(42);
@@ -186,7 +187,7 @@ contract EVMPackTest is Test {
 
         evmpack.registerImplementation(add, implementation);
 
-        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), abi.encodeWithSignature("initialize(uint256,address)",32, address(this)), "my-super-salt");
+        (address proxy, ) = proxyFactory.usePackageRelease(add.name, add.release.version, address(this), abi.encodeWithSignature("initialize(uint256,address)",32, address(this)), "my-super-salt");
 
         DummyImplementation proxyDummy = DummyImplementation(proxy);
         proxyDummy.setX(42);
@@ -210,10 +211,12 @@ contract EVMPackTest is Test {
         implementation.selector = "setX(uint256)";
 
         evmpack.registerImplementation(add, implementation);
+        address[] memory __owner = new address[](2);
+        __owner[0] = address(this);
 
-        address proxy_admin = address(new EVMPackProxyAdmin(address(this)));
+        address proxy_admin = address(new EVMPackProxyAdmin(__owner));
 
-        address proxy = proxyFactory.usePackageRelease(add.name, add.release.version, proxy_admin, abi.encodeWithSignature("initialize(uint256,address)",32, address(this)), "my-super-salt");
+        (address proxy, ) = proxyFactory.usePackageRelease(add.name, add.release.version, proxy_admin, abi.encodeWithSignature("initialize(uint256,address)",32, address(this)), "my-super-salt");
 
         DummyImplementation proxyDummy = DummyImplementation(proxy);
         proxyDummy.setX(42);

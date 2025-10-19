@@ -7,6 +7,9 @@ const os = require('os');
 const { createSymlink } = require("./utils");
 
 async function compile() {
+
+    console.log('Compiling contracts...');
+    
     try {
         execSync('command -v forge');
     } catch {

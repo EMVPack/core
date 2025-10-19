@@ -2,7 +2,8 @@
 pragma solidity ^0.8.28;
 
 import "forge-std/Test.sol";
-import "../../contracts/SemVer.sol";
+import "src/SemVer.sol";
+
 contract SemVerTest is Test {
     using SemVer for SemVer.Version;
 

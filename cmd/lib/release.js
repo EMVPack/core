@@ -16,7 +16,6 @@ const { createSymlink } = require("./utils");
 
 async function prepareRelease(deployer, external_implementation_address, evmpackConfig, releaseConfig){
     
-    console.log('Compiling contracts...');
     await compile();
     execSync('rm -f @evmpack')
 

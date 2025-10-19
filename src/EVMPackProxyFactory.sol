@@ -14,7 +14,7 @@ interface IEVMPackProxyFactory{
     error IncorrectImplementation();
     error IncorrectOwner();
 
-    function usePackageRelease(string calldata name, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address);
+    function usePackageRelease(string calldata name, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address, address);
 }
 
 contract EVMPackProxyFactory is IEVMPackProxyFactory {
@@ -26,7 +26,7 @@ contract EVMPackProxyFactory is IEVMPackProxyFactory {
     }
 
 
-    function usePackageRelease(string calldata name, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address){
+    function usePackageRelease(string calldata name, string calldata version, address owner, bytes calldata initData, string calldata salt) external returns(address, address){
 
         if(owner == address(0)){
             revert IncorrectOwner();
@@ -42,7 +42,9 @@ contract EVMPackProxyFactory is IEVMPackProxyFactory {
         address proxy_admin;
 
         if(!isAdminContract(owner)){
-            proxy_admin = address(new EVMPackProxyAdmin(owner));
+            address[] memory __owner = new address[](1);
+            __owner[0] = owner;
+            proxy_admin = address(new EVMPackProxyAdmin(__owner));
             emit ProxyAdminCreated(proxy_admin);
         }else{
             proxy_admin = owner;
@@ -59,7 +61,7 @@ contract EVMPackProxyFactory is IEVMPackProxyFactory {
                 initData
             );
             emit ProxyCreated(address(proxy), proxy_admin);
-            return address(proxy);
+            return (address(proxy),  proxy_admin);
         }else{
             EVMPackProxy proxy = new EVMPackProxy{
                 salt: _salt(salt, initData)
@@ -72,7 +74,7 @@ contract EVMPackProxyFactory is IEVMPackProxyFactory {
                 initData
             );
             emit ProxyCreated(address(proxy), proxy_admin);
-            return address(proxy);
+            return (address(proxy), proxy_admin);
         }
 
     }

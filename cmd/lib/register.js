@@ -43,7 +43,7 @@ async function register(external_implementation_address = false) {
     
     try {
         console.log('Starting package registration...');
-        execSync('rm @evmpack')
+        execSync('rm -f @evmpack')
         const { add, implementation } = await prepareAdd(deployer, external_implementation_address);
         await createSymlink(process.env.EVM_PACK_DIR+'/packages', './@evmpack');
 

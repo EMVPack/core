@@ -15,7 +15,6 @@
     "lint:sol": "slither . --foundry-out-directory artifacts --exclude-low --exclude different-pragma,incorrect-return-in-assembly,assembly-usage,low-level-calls"
   },
   "dependencies": {
-    "@openzeppelin/contracts-upgradeable": "^5.4.0",
     "axios": "^1.11.0",
     "boxen": "^5.1.2",
     "chalk": "^4.1.2",

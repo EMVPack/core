@@ -2,9 +2,9 @@
 pragma solidity ^0.8.28;
 
 import "forge-std/Script.sol";
-import "../contracts/EVMPack.sol";
-import "../contracts/ProxyFactory.sol";
-import "../contracts/EVMPackProxyFactory.sol";
+import "src/EVMPack.sol";
+import "src/ProxyFactory.sol";
+import "src/EVMPackProxyFactory.sol";
 import "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import {ITransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
