@@ -35,6 +35,8 @@ interface IEVMPackProxy is IERC1967 {
      * @param data The data to pass to the new implementation.
      */
     function upgradeToAndCall(string memory version, bytes calldata data) external payable;
+    function getPackage() external view returns(string memory _package);
+    function getVersion() external view returns(string memory _version);
 }
 
 /**
@@ -105,6 +107,27 @@ contract EVMPackProxy is ERC1967Proxy {
         ERC1967Utils.changeAdmin(_proxyAdmin());
     }
 
+
+    function getPackage() public view returns(string memory _package){
+        bytes32 packageNameBytes32;
+
+        assembly {
+            packageNameBytes32 := sload(_PACKAGE_SLOT)
+        }
+
+        _package = packageNameBytes32.toString();
+    }
+
+    function getVersion() public view returns(string memory _version){
+        bytes32 versionBytes32;
+
+        assembly {
+            versionBytes32 := sload(_VERSION_SLOT)
+        }
+
+        _version = versionBytes32.toString();
+    }
+
     /**
      * @dev Returns the admin of this proxy.
      */
@@ -153,6 +176,7 @@ contract EVMPackProxy is ERC1967Proxy {
         }
         
         bytes32 packageNameBytes32;
+
         assembly {
             packageNameBytes32 := sload(_PACKAGE_SLOT)
         }
@@ -166,4 +190,7 @@ contract EVMPackProxy is ERC1967Proxy {
 
         ERC1967Utils.upgradeToAndCall(implementation.target, data);
     }
+
+
+
 }

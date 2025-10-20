@@ -72,7 +72,13 @@ async function compile() {
 
     const compilerSettings = releaseConfig.compiler;
 
+    const remappings = `@evmpack=${os.homedir()}/.evmpack/packages`
 
+    if(!releaseConfig.compiler.remappings){
+        releaseConfig.compiler.remappings = [remappings]
+    }else{
+        releaseConfig.compiler.remappings.push(remappings)
+    }
 
 
     const command = [
@@ -89,7 +95,7 @@ async function compile() {
         `--root ${compilerSettings.root}`,
         `--extra-output userdoc devdoc`,
         `-q`,
-        `--remappings  @evmpack=${os.homedir()}/.evmpack/packages`
+        `--remappings ${releaseConfig.compiler.remappings.join(" --remappings ")}`
     ].join(' ');
 
     
