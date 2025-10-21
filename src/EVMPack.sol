@@ -5,7 +5,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./EVMPackStorage.sol";
 import "./IEVMPack.sol";
 import "./EVMPackLib.sol";
-import {IEVMPackProxyFactory} from "./EVMPackProxyFactory.sol";
+
 
 /**
  * @title EVMPack

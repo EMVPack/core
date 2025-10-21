@@ -3,19 +3,11 @@ const path = require('path');
 const https = require('https');
 const os = require('os');
 const inquirer = require('inquirer');
-const { findFile } = require('./utils')
-const { createSymlink } = require("./utils");
+const { execSync } = require('child_process');
+
 
 const packageTypes = ['implementation', 'library'];
 const implTypes = ['static', 'transparent', 'diamond'];
-const contractTemplate = `
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
-
-contract Template {
-
-}
-`;
 
 async function getSolcVersions() {
   const cacheDir = path.join(os.homedir(), '.evmpack', 'cache');
@@ -95,30 +87,6 @@ async function init() {
       type: 'input',
       name: 'main_contract',
       message: 'Main contract name (without .sol extension):',
-      when: (answers) => answers.type === 'implementation',
-      validate: function (value) {
-        if (findFile(process.cwd(), `${value}.sol`)) {
-          return true;
-        }
-
-        try {
-          fs.writeFileSync(
-            path.join(process.cwd(), value + '.sol'),
-            contractTemplate
-          );
-
-          return true;
-        } catch (error) {
-          return false;
-        }
-
-      }
-    },
-    {
-      type: 'input',
-      name: 'selector',
-      message: 'Selector:',
-      choices: packageTypes,
       when: (answers) => answers.type === 'implementation'
     },
     {
@@ -127,7 +95,14 @@ async function init() {
       message: 'Implementation type:',
       choices:implTypes,
       when: (answers) => answers.type === 'implementation'
-    },    
+    },        
+    {
+      type: 'input',
+      name: 'selector',
+      message: 'Selector:',
+      when: (answers) => answers.implementationType === 'transparent'
+    },
+
     {
       type: 'input',
       name: 'license',
@@ -171,7 +146,21 @@ async function init() {
 
   const releaseConfig = {
     version: "1.0.0",
-    dependencies: {}
+    dependencies: {},
+    compiler: {
+      via_ir: true,
+      evm_version: "prague",
+      optimizer: {
+          enabled: true,
+          runs: 200
+      },
+      no_metadata: true,
+      solc_version: answers.solidityVersion,
+      output_dir: "./artifacts",
+      cache_dir: "../cache",
+      context_dir: "./",
+      root:  "./src"
+    }
   }
 
   if (answers.type == "implementation") {
@@ -179,6 +168,9 @@ async function init() {
     releaseConfig.selector = answers.selector;
     releaseConfig.implementationType = answers.implementationType;
   }
+
+
+  execSync("forge init", { stdio: 'inherit' });
 
   fs.writeFileSync(
     path.join(process.cwd(), 'evmpack.json'),
@@ -189,10 +181,9 @@ async function init() {
     path.join(process.cwd(), 'release.json'),
     JSON.stringify(releaseConfig, null, 2)
   );
-
+  
   console.log('\nevmpack.json and release.json created successfully!');
 
-  await createSymlink(process.env.EVM_PACK_DIR + '/packages', './@evmpack');
 
 }
 
